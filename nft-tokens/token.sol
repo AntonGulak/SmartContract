@@ -66,7 +66,7 @@ Token [] tokenArr;
         tokenToOwner[name].price = amount;
     }
    
-
+    //Проверка на владельца токена
 	modifier checkOwner(string name) {
 		// Check that message was signed with contracts key.
 		require(msg.pubkey() == tokenToOwner[name].owner, 101);
@@ -74,6 +74,7 @@ Token [] tokenArr;
 		_;
 	}
 
+    //Проверка на существование токена
     modifier checkToken(string name) {
 		require(tokenToOwner.exists(name) == true, 100, "Non-existent token");
         _;
