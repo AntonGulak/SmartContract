@@ -1,0 +1,21 @@
+PS C:\Users\anton\Desktop\тестовое\SmartContract> tondev sol create NewContract
+Solidity contract NewContract.sol created.
+PS C:\Users\anton\Desktop\тестовое\SmartContract> tondev sol compile NewContract.sol
+PS C:\Users\anton\Desktop\тестовое\SmartContract> tonos-cli genaddr --genkey second_keys.json NewContract.tvc NewContract.abi.json 
+Config: default
+Input arguments:
+     tvc: NewContract.tvc
+      wc: None
+    keys: second_keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "want front decorate defense auction empower energy toward fix first depth purchase"
+Raw address: 0:0da656a48846b99cbc01dfcd31cf7f2f0fed9daf75cd3e8db6a458190ff80e61
+testnet:
+Non-bounceable address (for init): 0QANplakiEa5nLwB380xz38vD-2dr3XNPo22pFgZD_gOYeje
+Bounceable address (for later access): kQANplakiEa5nLwB380xz38vD-2dr3XNPo22pFgZD_gOYbUb
+mainnet:
+Non-bounceable address (for init): UQANplakiEa5nLwB380xz38vD-2dr3XNPo22pFgZD_gOYVNU
+Bounceable address (for later access): EQANplakiEa5nLwB380xz38vD-2dr3XNPo22pFgZD_gOYQ6R
+Succeeded
