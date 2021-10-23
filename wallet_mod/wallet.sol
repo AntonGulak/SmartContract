@@ -35,7 +35,7 @@ contract wallet {
 
      function sendAllValueAndDestroyed(address dest, bool bounce) public checkOwner() view {
 
-        dest.transfer(0, bounce, 128 + 32);
+        dest.transfer(1, bounce, 128 + 32);
     }
 
     modifier checkOwner() {
