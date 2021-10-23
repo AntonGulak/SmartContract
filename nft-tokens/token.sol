@@ -37,22 +37,23 @@ Token [] tokenArr;
     }
 
 
-// Получаем адрес владельца по номеру токена
-    function getTokenOwner(string name) public view returns (uint) {
+// Получаем адрес владельца по имени токена
+    function getTokenOwner(string name) public checkToken(name) view returns (uint) {
         return tokenToOwner[name].owner;
     }
 
  // Получаем стоимость  по имени токена
-    function getTokenPrice(string name) public view returns (uint) {
+    function getTokenPrice(string name) public checkToken(name) view returns (uint) {
         return tokenToOwner[name].price;
     }   
 
 
 // Получить  информацию о токене (автор, год) по его имени
-    function getTokenInfo(string name) public view returns (string tokennameAuthor, uint tokenYear) {
+    function getTokenInfo(string name) public checkToken(name) view returns (string tokennameAuthor, uint tokenYear) {
         tokennameAuthor = tokenArr[tokenToOwner[name].index].nameAuthor;
         tokenYear = tokenArr[tokenToOwner[name].index].year;
     }
+
 // Сменить владельца с проверкой совпадения его адреса с адресом меняемого токена
     function changeOwner(string name, uint pubkeyOfNewOwner) public checkOwner(name) {
 
@@ -71,6 +72,11 @@ Token [] tokenArr;
 		require(msg.pubkey() == tokenToOwner[name].owner, 101);
 		tvm.accept();
 		_;
+	}
+
+    modifier checkToken(string name) {
+		require(tokenToOwner.exists(name) == true, 100, "Non-existent token");
+        _;
 	}
 
     constructor() public {
