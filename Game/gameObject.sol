@@ -14,6 +14,7 @@ contract gameObject is IIO {
     uint HP;
     int defend;
     address attacker; //может быть нужен массив?
+     
 
     constructor(uint valueHP) public { 
         require(tvm.pubkey() != 0, 101);
@@ -29,10 +30,10 @@ contract gameObject is IIO {
 
 
     //Разобрать косяк с адрессом
-    function getAttack(uint value, address dest) public override {
+    function getAttack(uint value) public override {
         tvm.accept();
 
-        attacker = dest;
+        attacker = address(msg.pubkey());
         selfDestruction(value);
     }
 
