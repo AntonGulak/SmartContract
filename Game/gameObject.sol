@@ -48,16 +48,11 @@ contract gameObject is IIO {
         }
     }
 
-    function sendAllValueAndDestroyed() private checkOwner() view {
-
+    function sendAllValueAndDestroyed() private view {
+        tvm.accept();
         attacker.transfer(1, true, 128 + 32);
     }
 
-      modifier checkOwner() {
-		require(msg.pubkey() == tvm.pubkey(), 102);
-        tvm.accept();
-		_;
-	}
 
 
 
