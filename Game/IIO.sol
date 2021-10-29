@@ -4,7 +4,12 @@ pragma AbiHeader expire;
 
 interface IIO {
     
-    function getAttack(int value) external; 
-    function getDefend(int value) external; 
+    function toAttack(int value) external; 
+
+    modifier checkOwner() {
+	  require(msg.pubkey() == tvm.pubkey(), 102);
+      tvm.accept();
+	  _;
+	}
     
 }
