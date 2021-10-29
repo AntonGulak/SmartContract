@@ -12,7 +12,8 @@ contract baseStation is gameObject {
       tvm.accept();
 
       //Проверка адресса нужна ли?
-      unit.push(dest); }
+      unit.push(dest); 
+      }
 
     function deleteUnit(uint index) public {
       tvm.accept();
@@ -21,6 +22,6 @@ contract baseStation is gameObject {
       unit.pop;
     }
 
-    
+
 
 }
