@@ -4,6 +4,7 @@ pragma AbiHeader expire;
 
 interface IIO {
     
-    function getAttack(uint value) external; 
+    function getAttack(int value) external; 
+    function getDefend(int value) external; 
     
 }

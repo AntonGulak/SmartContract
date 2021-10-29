@@ -11,50 +11,47 @@ import "IIO.sol";
 contract gameObject is IIO {
 
 
-    uint HP;
+    int HP;
     int defend;
-    address attacker; //может быть нужен массив?
-     
+    address attacker; 
 
-    constructor(uint valueHP) public { 
+    constructor(int valueHP) public { 
         require(tvm.pubkey() != 0, 101);
         tvm.accept();
-
+        
         HP = valueHP;
     }
 
-    function getDefend(int value) public {
+    function getDefend(int value) virtual external override {
         tvm.accept();
         defend = defend + value;
     }
 
 
-    //Разобрать косяк с адрессом
-    function getAttack(uint value) public override {
+    function getAttack(int value) virtual external override {
         tvm.accept();
 
-        attacker = address(msg.pubkey());
-        selfDestruction(value);
+        attacker = msg.sender;
+        HP = HP - value;
+        checkDead();
     }
 
-    function selfDestruction(uint value) private {
-        tvm.accept();
-
-        if (HP < value) {
-            //вызвать саморазрушение и удаление всех юнитов
+    function checkDead() private checkOwner()  {
+        if (HP < 0) {
             sendAllValueAndDestroyed();
         }
-        else  {
-            HP = HP - value;
-        }
     }
 
-    function sendAllValueAndDestroyed() private view {
-        tvm.accept();
+    function sendAllValueAndDestroyed() private checkOwner() {
         attacker.transfer(1, true, 128 + 32);
     }
 
 
+     modifier checkOwner() {
+		require(msg.pubkey() == tvm.pubkey(), 102);
+        tvm.accept();
+		_;
+	}
 
 
 }
