@@ -3,53 +3,25 @@ pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 
 import "gameObject.sol";
-import "militaryUnit.sol";
 
 contract baseStation is gameObject {
 
-  address[] private war;
-  address[] private arch;
+  address [] private unit;
   
-  function pushWarrior() private {
+  function pushUnit(address dest) public {
       tvm.accept();
 
-      warrior w = new warrior();
-      war.push(w);
+      //Проверка адресса нужна ли?
+      unit.push(dest); 
       }
 
-  function pushArcher() private {
+    function deleteUnit(uint index) public {
       tvm.accept();
 
-      warrior w = new warrior();
-      war.push(w);
-      }      
-
-    function deleteWarrior(uint index) private {
-      tvm.accept();
-      //Проверка на пустоту
-
-      war[index] = war[war.length - 1];
-      war.pop;
+      unit[index] = unit[unit.length - 1];
+      unit.pop;
     }
 
-    function deleteArcher(uint index) private {
-      tvm.accept();
-      //Проверка на пустоту
-
-      arch[index] = arch[arch.length - 1];
-      arch.pop;
-    }
-
-
-}
-
-
-contract warrior is militaryUnit {
-
-
-}
-
-contract archer is militaryUnit {
 
 
 }

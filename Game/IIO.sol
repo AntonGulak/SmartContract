@@ -7,11 +7,9 @@ interface IIO {
     function toAttack(int value) external; 
 
     modifier checkOwner() {
-       require(msg.pubkey() == tvm.pubkey(), 102);
+	  require(msg.pubkey() == tvm.pubkey(), 102);
       tvm.accept();
-      _;
+	  _;
 	}
     
-
- 
 }
