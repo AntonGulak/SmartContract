@@ -3,10 +3,9 @@ pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 
 import "gameObject.sol";
-import "addUnit.sol";
-import "deleteUnit.sol";
+import "militaryUnit.sol";
 
-contract baseStation is gameObject, AddUnit {
+contract baseStation is gameObject {
 
   address [] private unit;
 
@@ -34,8 +33,8 @@ contract baseStation is gameObject, AddUnit {
     function sendAllValueAndDestroyed() public override checkOwner() {
       
        for (uint i = 0; i < unit.length; i++) {
-         DeleteUnit un = DeleteUnit(unit[i]);
-         un.deleteUnit(attacker);
+         
+         militaryUnit(unit[i]).deleteUnit(attacker);
        }
 
         attacker.transfer(1, true, 128 + 32);

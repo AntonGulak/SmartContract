@@ -3,10 +3,10 @@ pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 
 import "gameObject.sol";
-import "addUnit.sol";
-import "deleteUnit.sol";
+import "baseStation.sol";
 
-contract militaryUnit is gameObject, DeleteUnit {
+
+contract militaryUnit is gameObject {
     
     address internal baseStat;
     int internal attackPower;
@@ -30,14 +30,15 @@ contract militaryUnit is gameObject, DeleteUnit {
     }
 
 
-    constructor(AddUnit baseStation, int valueAttack) virtual public { 
+    constructor(address dest, int valueAttack) virtual public { 
         require(tvm.pubkey() != 0, 101);
         tvm.accept();
 
-        baseStation.addUnit();
+        baseStation(dest).addUnit();
+
         setAttackPower(valueAttack);
         
-        baseStat = baseStation;
+        baseStat = dest;
 
     }
  
