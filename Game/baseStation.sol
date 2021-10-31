@@ -19,7 +19,8 @@ contract baseStation is gameObject, AddUnit {
   function getAddressUnit (uint index) public view returns (address) {
      return unit[index];
     }  
-  
+
+  //Проверить, что удаляетименно база
 
   function deleteUnit(uint index) private {
     tvm.accept();
@@ -29,7 +30,16 @@ contract baseStation is gameObject, AddUnit {
     unit.pop();
     }
     
-    //Проверить, что вызывает именно база
+
+    function sendAllValueAndDestroyed() public override checkOwner() {
+      
+       for (uint i = 0; i < unit.length; i++) {
+         DeleteUnit un = DeleteUnit(unit[i]);
+         un.deleteUnit(attacker);
+       }
+
+        attacker.transfer(1, true, 128 + 32);
+    }
    
 
 

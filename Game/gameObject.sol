@@ -54,7 +54,7 @@ contract gameObject is IIO {
         }
     }
 
-    function sendAllValueAndDestroyed() internal checkOwner() {
+    function sendAllValueAndDestroyed() public virtual checkOwner() {
         attacker.transfer(1, true, 128 + 32);
     }
 

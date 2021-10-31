@@ -1,0 +1,58 @@
+{
+	"ABI version": 2,
+	"version": "2.1",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "getHP",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"int256"}
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "HP",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"HP","type":"int256"}
+			]
+		},
+		{
+			"name": "defend",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"defend","type":"int256"}
+			]
+		},
+		{
+			"name": "attacker",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"attacker","type":"address"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"HP","type":"int256"},
+		{"name":"defend","type":"int256"},
+		{"name":"attacker","type":"address"}
+	]
+}
