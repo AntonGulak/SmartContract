@@ -48,7 +48,7 @@ contract gameObject is IIO {
         checkDead();
     }
 
-    function checkDead() internal checkOwner()  {
+    function checkDead() virtual internal checkOwner()  {
         if (HP < 0) {
             sendAllValueAndDestroyed();
         }

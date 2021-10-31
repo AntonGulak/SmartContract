@@ -9,7 +9,6 @@ import "deleteUnit.sol";
 contract militaryUnit is gameObject, DeleteUnit {
     
     address internal baseStat;
-    string internal nameUnit;
     int internal attackPower;
 
     //Проверка на то, что вызывает база
@@ -24,9 +23,6 @@ contract militaryUnit is gameObject, DeleteUnit {
        return attackPower;
     }
 
-    function getNameUnit() public view returns (string) {
-       return nameUnit;
-    }
 
     function setAttackPower(int value) internal {
         tvm.accept();
@@ -45,8 +41,8 @@ contract militaryUnit is gameObject, DeleteUnit {
 
     }
  
-    function Attack(IIO add) public pure checkOwner() {
-        add.toAttack(attackPower);
+    function Attack(IIO dest) public pure checkOwner() {
+        dest.toAttack(attackPower);
     }
 
 
