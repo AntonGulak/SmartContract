@@ -4,6 +4,13 @@
 	"header": ["time", "expire"],
 	"functions": [
 		{
+			"name": "addUnit",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getAddressUnit",
 			"inputs": [
 				{"name":"index","type":"uint256"}

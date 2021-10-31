@@ -58,8 +58,5 @@ contract gameObject is IIO {
         attacker.transfer(1, true, 128 + 32);
     }
 
-    function CallParentContract(uint8 ind) virtual external override {
-
-    }
-
+   
 } 
