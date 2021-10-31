@@ -7,20 +7,27 @@ import "IIO.sol";
 contract gameObject is IIO {
 
 
-    int private HP;
-    int private defend;
-    address private attacker; 
+    int internal HP;
+    int internal defend;
+    address internal attacker; 
 
-    constructor() public { 
+    function getHP () public view returns (int) {
+        return HP;
+    }
+
+    function getDefend () public view returns (int) {
+     return defend;
+    }   
+
+    constructor() virtual public { 
         require(tvm.pubkey() != 0, 101);
         tvm.accept();
 
-        require(HP > 0);
         HP = 5;
     }
 
-    function setDefend(int value) internal   checkOwner() {
-        defend = defend + value;
+    function setDefend(int value) internal  checkOwner() {
+        defend = value;
     }
 
 
@@ -28,7 +35,16 @@ contract gameObject is IIO {
         tvm.accept();
 
         attacker = msg.sender;
-        HP = HP - (value - defend);
+        int damage;
+
+        if (defend > value ) {
+            damage = 0;
+        }
+        else {
+            damage = value - defend;
+        }
+
+        HP = HP - defend;
         checkDead();
     }
 
@@ -42,4 +58,8 @@ contract gameObject is IIO {
         attacker.transfer(1, true, 128 + 32);
     }
 
-}
+    function CallParentContract(uint8 ind) virtual external override {
+
+    }
+
+} 

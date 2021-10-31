@@ -7,13 +7,16 @@ import "gameObject.sol";
 contract militaryUnit is gameObject {
     address private baseStat;
 
-    constructor() virtual public override{ 
+    constructor(IIO baseStation) public { 
         require(tvm.pubkey() != 0, 101);
         tvm.accept();
 
-        baseStat = msg.sender;
+        baseStation.CallParentContract(0);
+        
+        baseStat = baseStation;
 
     }
+
 
     
 
