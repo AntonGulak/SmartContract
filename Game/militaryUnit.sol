@@ -3,8 +3,8 @@ pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 
 import "gameObject.sol";
-import "addUnit.sol";
 import "deleteUnit.sol";
+import "baseStation.sol";
 
 contract militaryUnit is gameObject, DeleteUnit {
     
@@ -14,7 +14,7 @@ contract militaryUnit is gameObject, DeleteUnit {
     //Проверка на то, что вызывает база
     function deleteUnit(address att) external override{
         tvm.accept();
-        
+    
         attacker = att;
         sendAllValueAndDestroyed();
     }
@@ -30,19 +30,29 @@ contract militaryUnit is gameObject, DeleteUnit {
     }
 
 
-    constructor(AddUnit baseStation, int valueAttack) virtual public { 
+    constructor(address baseAdress, int valueAttack)  public { 
         require(tvm.pubkey() != 0, 101);
         tvm.accept();
 
-        baseStation.addUnit();
+        baseStation(baseAdress).addUnit();
+
+        
         setAttackPower(valueAttack);
         
-        baseStat = baseStation;
+        baseStat = baseAdress;
 
     }
  
-    function Attack(IIO dest) public pure checkOwner() {
+    function Attack(IIO dest) public checkOwner() {
+        tvm.accept();
         dest.toAttack(attackPower);
+    }
+
+    function checkDead() virtual internal override checkOwner()  {
+        if (HP < 0) {
+            sendAllValueAndDestroyed();
+            baseStation(baseStat).deleteUnit();
+        }
     }
 
 

@@ -3,16 +3,18 @@ pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 
 import "gameObject.sol";
-import "addUnit.sol";
 import "deleteUnit.sol";
 
-contract baseStation is gameObject, AddUnit {
+contract baseStation is gameObject {
 
   address [] private unit;
+  mapping (address => uint) private destToInt;
 
-  function addUnit() external override {
+
+  function addUnit() public  {
     tvm.accept();
     unit.push(msg.sender);
+    destToInt[msg.sender] = unit.length - 1;
   }
 
 
@@ -22,12 +24,20 @@ contract baseStation is gameObject, AddUnit {
 
   //Проверить, что удаляетименно база
 
-  function deleteUnit(uint index) private {
-    tvm.accept();
-      
+  function deleteUnitIndex(uint index) public checkOwner() {
+
     //Проверить на пустоту
     unit[index] = unit[unit.length - 1];
     unit.pop();
+    }
+
+  function deleteUnit() external {
+    tvm.accept();
+      
+    //Проверить на пустоту
+    unit[destToInt[msg.sender]] = unit[unit.length - 1];
+    unit.pop();
+
     }
     
 

@@ -6,7 +6,32 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"baseStation","type":"address"}
+				{"name":"baseAdress","type":"address"},
+				{"name":"valueAttack","type":"int256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deleteUnit",
+			"inputs": [
+				{"name":"att","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getAttackPower",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"int256"}
+			]
+		},
+		{
+			"name": "Attack",
+			"inputs": [
+				{"name":"dest","type":"address"}
 			],
 			"outputs": [
 			]
@@ -36,9 +61,8 @@
 			]
 		},
 		{
-			"name": "CallParentContract",
+			"name": "sendAllValueAndDestroyed",
 			"inputs": [
-				{"name":"ind","type":"uint8"}
 			],
 			"outputs": [
 			]
@@ -55,6 +79,7 @@
 		{"name":"HP","type":"int256"},
 		{"name":"defend","type":"int256"},
 		{"name":"attacker","type":"address"},
-		{"name":"baseStat","type":"address"}
+		{"name":"baseStat","type":"address"},
+		{"name":"attackPower","type":"int256"}
 	]
 }

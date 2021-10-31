@@ -20,9 +20,23 @@
 			]
 		},
 		{
-			"name": "CallParentContract",
+			"name": "deleteUnitIndex",
 			"inputs": [
-				{"name":"ind","type":"uint8"}
+				{"name":"index","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deleteUnit",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendAllValueAndDestroyed",
+			"inputs": [
 			],
 			"outputs": [
 			]
@@ -70,6 +84,7 @@
 		{"name":"HP","type":"int256"},
 		{"name":"defend","type":"int256"},
 		{"name":"attacker","type":"address"},
-		{"name":"unit","type":"address[]"}
+		{"name":"unit","type":"address[]"},
+		{"name":"destToInt","type":"map(address,uint256)"}
 	]
 }
