@@ -6,7 +6,7 @@ import "gameObject.sol";
 import "addUnit.sol";
 import "deleteUnit.sol";
 
-contract baseStation is gameObject, AddUnit {
+contract baseStation is gameObject, AddBase {
 
   address [] private unit;
 
@@ -22,7 +22,7 @@ contract baseStation is gameObject, AddUnit {
 
   //Проверить, что удаляетименно база
 
-  function deleteUnit(uint index) private {
+  function deleteUnit(uint index) external override {
     tvm.accept();
       
     //Проверить на пустоту
