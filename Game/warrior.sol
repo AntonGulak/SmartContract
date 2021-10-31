@@ -6,12 +6,10 @@ import "militaryUnit.sol";
 
 contract warrior is militaryUnit {
 
-
-
-
-    constructor(address baseAdress, int valueAttack)  public { 
+    constructor(AdittionInterface dest) militaryUnit(dest) public { 
+        HP = 10;
+        setAttackPower(2);
     
-
     }
  
 

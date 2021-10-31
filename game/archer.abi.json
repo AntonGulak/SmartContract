@@ -6,7 +6,7 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"baseAdress","type":"address"}
+				{"name":"dest","type":"address"}
 			],
 			"outputs": [
 			]

@@ -4,6 +4,13 @@
 	"header": ["time", "expire"],
 	"functions": [
 		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getHP",
 			"inputs": [
 			],
@@ -12,26 +19,10 @@
 			]
 		},
 		{
-			"name": "constructor",
+			"name": "set",
 			"inputs": [
 			],
 			"outputs": [
-			]
-		},
-		{
-			"name": "HP",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"HP","type":"int256"}
-			]
-		},
-		{
-			"name": "defend",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"defend","type":"int256"}
 			]
 		},
 		{

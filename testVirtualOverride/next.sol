@@ -10,7 +10,7 @@ contract next {
  
         test called = test(dest);
 
-        called.getHP();
+        called.set();
 
     }
 

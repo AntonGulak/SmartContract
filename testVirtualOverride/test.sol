@@ -6,21 +6,25 @@ pragma AbiHeader expire;
 contract test {
 
 
-    int public HP;
-    int public defend;
+    int internal HP;
+    int internal defend;
     address public attacker; 
 
-    function getHP () public virtual returns (int)  {
+    constructor() public { 
         tvm.accept();
-        HP = 10;
+        HP = 5;
+    }
+
+
+    function getHP () public view returns (int)  {
 
         return HP;
     }
 
-     function getHP2 () public  returns (int)  {
-        tvm.accept();
-
-        return HP;
+    function set() external {
+        HP = 7;
     }
+
+  
 
 }

@@ -5,6 +5,10 @@ pragma AbiHeader expire;
 import "militaryUnit.sol";
 
 contract archer is militaryUnit {
-
+    
+    constructor(AdittionInterface dest) militaryUnit(dest) public { 
+        HP = 5;
+        setAttackPower(4);
+    }
 
 }

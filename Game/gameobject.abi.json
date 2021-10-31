@@ -35,9 +35,8 @@
 			]
 		},
 		{
-			"name": "CallParentContract",
+			"name": "sendAllValueAndDestroyed",
 			"inputs": [
-				{"name":"ind","type":"uint8"}
 			],
 			"outputs": [
 			]
