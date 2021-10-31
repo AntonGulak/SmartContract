@@ -19,7 +19,7 @@ contract gameObject is IIO {
      return defend;
     }   
 
-    constructor() virtual public { 
+    constructor() public { 
         require(tvm.pubkey() != 0, 101);
         tvm.accept();
 

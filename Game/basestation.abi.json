@@ -71,6 +71,14 @@
 			],
 			"outputs": [
 			]
+		},
+		{
+			"name": "destToInt",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"destToInt","type":"map(address,uint256)"}
+			]
 		}
 	],
 	"data": [

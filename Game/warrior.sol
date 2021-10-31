@@ -7,4 +7,15 @@ import "militaryUnit.sol";
 contract warrior is militaryUnit {
 
 
+
+
+    constructor(address baseAdress, int valueAttack)  public { 
+    
+
+    }
+ 
+
+
+
+
 }

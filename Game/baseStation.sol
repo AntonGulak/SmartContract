@@ -4,15 +4,17 @@ pragma AbiHeader expire;
 
 import "gameObject.sol";
 import "deleteUnit.sol";
+import "adittionInterface.sol";
 
-contract baseStation is gameObject {
+contract baseStation is gameObject, AdittionInterface {
 
   address [] private unit;
-  mapping (address => uint) private destToInt;
+  mapping (address => uint) public destToInt;
 
 
-  function addUnit() public  {
+  function addUnit() external override  {
     tvm.accept();
+ 
     unit.push(msg.sender);
     destToInt[msg.sender] = unit.length - 1;
   }
@@ -22,25 +24,28 @@ contract baseStation is gameObject {
      return unit[index];
     }  
 
-  //Проверить, что удаляетименно база
 
   function deleteUnitIndex(uint index) public checkOwner() {
 
-    //Проверить на пустоту
+    //require(unit.empty() == false);
+
     unit[index] = unit[unit.length - 1];
     unit.pop();
-    }
+    } 
 
-  function deleteUnit() external {
+  function deleteUnit() external override {
     tvm.accept();
+
+    //Проверка на то, что вызывает союзный юнит
+    //require(destToInt.exists(msg.sender) == true);
       
-    //Проверить на пустоту
+    //require(unit.empty() == false);
+
     unit[destToInt[msg.sender]] = unit[unit.length - 1];
     unit.pop();
 
     }
     
-
     function sendAllValueAndDestroyed() public override checkOwner() {
       
        for (uint i = 0; i < unit.length; i++) {
