@@ -35,8 +35,9 @@
 			]
 		},
 		{
-			"name": "sendAllValueAndDestroyed",
+			"name": "toAttack",
 			"inputs": [
+				{"name":"value","type":"int256"}
 			],
 			"outputs": [
 			]
@@ -55,14 +56,6 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"int256"}
-			]
-		},
-		{
-			"name": "toAttack",
-			"inputs": [
-				{"name":"value","type":"int256"}
-			],
-			"outputs": [
 			]
 		},
 		{

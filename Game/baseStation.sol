@@ -67,9 +67,9 @@ contract baseStation is gameObject, AdittionInterface {
         if (HP <= 0) {
             for (uint i = 0; i < unit.length; i++) {
               //удаление юнита по запросу из станции
-              DeleteUnit un = DeleteUnit(unit[i]);
-              un.deleteUnit(attacker); }
-              
+              DeleteUnit(unit[i]).deleteUnit(attacker); 
+              }
+            
             attacker.transfer(1, true, 128 + 32);
         }
     }
