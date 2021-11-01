@@ -20,7 +20,8 @@ contract militaryUnit is gameObject, DeleteUnit {
         //require(msg.sender == baseStat);   
 
         attacker = att;
-        sendAllValueAndDestroyed();
+
+        attacker.transfer(1, true, 128 + 32);
     }
 
     function getAttackPower() public view returns (int) {
@@ -43,17 +44,32 @@ contract militaryUnit is gameObject, DeleteUnit {
         AdittionInterface(baseStat).addUnit();
     }
  
-    function Attack(IIO dest) public checkOwner() {
-        dest.toAttack(attackPower);
+    function Attack(address IIOAdress) public  {
+        tvm.accept();
+
+        IIO(IIOAdress).toAttack(attackPower);
     }
 
-    function checkDead() virtual internal override checkOwner()  {
-        if (HP < 0) {
 
-            sendAllValueAndDestroyed();
-            AdittionInterface(baseStat).deleteUnit();
+    /*function toAttack(int value)  external override {
+        tvm.accept();
+
+        attacker = msg.sender;
+        int damage;
+
+        if (defend >= value ) {
+            damage = 0;
         }
-    }
+        else {
+            damage = value - defend;
+        } 
+
+        HP = HP - damage;
+
+        if (HP <= 0) {
+            AdittionInterface(baseStat).deleteUnit();
+            attacker.transfer(1, true, 128 + 32);  }
+    }*/
 
 
 }

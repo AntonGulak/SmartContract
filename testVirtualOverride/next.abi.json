@@ -12,10 +12,41 @@
 			]
 		},
 		{
+			"name": "getHP",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"int256"}
+			]
+		},
+		{
+			"name": "set",
+			"inputs": [
+				{"name":"value","type":"int256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendAllValueAndDestroyed",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "constructor",
 			"inputs": [
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "attacker",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"attacker","type":"address"}
 			]
 		}
 	],
@@ -26,6 +57,10 @@
 	"fields": [
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
-		{"name":"_constructorFlag","type":"bool"}
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"HP","type":"int256"},
+		{"name":"defend","type":"int256"},
+		{"name":"attacker","type":"address"},
+		{"name":"value","type":"int256"}
 	]
 }

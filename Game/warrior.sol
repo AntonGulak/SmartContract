@@ -8,7 +8,7 @@ contract warrior is militaryUnit {
 
     constructor(AdittionInterface dest) militaryUnit(dest) public { 
         HP = 10;
-        setAttackPower(2);
+        attackPower = 2;
     
     }
  

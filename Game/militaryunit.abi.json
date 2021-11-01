@@ -30,7 +30,7 @@
 		{
 			"name": "Attack",
 			"inputs": [
-				{"name":"dest","type":"address"}
+				{"name":"IIOAdress","type":"address"}
 			],
 			"outputs": [
 			]
@@ -55,13 +55,6 @@
 			"name": "toAttack",
 			"inputs": [
 				{"name":"value","type":"int256"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "sendAllValueAndDestroyed",
-			"inputs": [
 			],
 			"outputs": [
 			]

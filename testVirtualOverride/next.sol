@@ -3,14 +3,18 @@ pragma AbiHeader expire;
 
 import "test.sol";
 
-contract next {
+contract next is test {
+
+    int internal value = 155;
 
     function doit(address dest) public  {
         tvm.accept();
- 
-        test called = test(dest);
 
-        called.set();
+        IIO(dest).set(value); 
+ 
+        //test called = test(dest);
+
+        //called.set(value);
 
     }
 

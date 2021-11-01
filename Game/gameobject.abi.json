@@ -33,13 +33,6 @@
 			],
 			"outputs": [
 			]
-		},
-		{
-			"name": "sendAllValueAndDestroyed",
-			"inputs": [
-			],
-			"outputs": [
-			]
 		}
 	],
 	"data": [
