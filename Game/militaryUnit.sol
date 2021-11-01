@@ -13,7 +13,7 @@ contract militaryUnit is gameObject, DeleteUnit {
     int internal attackPower;
 
     
-    function deleteUnit(address att) virtual external override{
+    function deleteUnit(address att) external override{
         tvm.accept();
 
         //Проверка на то, что вызывает база
