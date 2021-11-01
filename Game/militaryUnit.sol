@@ -51,7 +51,7 @@ contract militaryUnit is gameObject, DeleteUnit {
     }
 
 
-    /*function toAttack(int value)  external override {
+    function toAttack(int value)  external override {
         tvm.accept();
 
         attacker = msg.sender;
@@ -69,7 +69,7 @@ contract militaryUnit is gameObject, DeleteUnit {
         if (HP <= 0) {
             AdittionInterface(baseStat).deleteUnit();
             attacker.transfer(1, true, 128 + 32);  }
-    }*/
+    }
 
 
 }

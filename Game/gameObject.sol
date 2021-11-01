@@ -34,7 +34,7 @@ contract gameObject is IIO {
     }
 
   
-    function toAttack(int value)  external override {
+    function toAttack(int value)  virtual external override {
         tvm.accept();
 
         attacker = msg.sender;
