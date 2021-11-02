@@ -8,7 +8,7 @@ contract archer is militaryUnit {
     
     constructor(AdittionInterface dest) militaryUnit(dest) public { 
         HP = 5;
-        attackPower = 4;
+        setAttackPower(4);
     }
 
 }

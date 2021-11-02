@@ -36,14 +36,6 @@
 			]
 		},
 		{
-			"name": "toAttack",
-			"inputs": [
-				{"name":"value","type":"int256"}
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "getHP",
 			"inputs": [
 			],
@@ -57,6 +49,21 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"int256"}
+			]
+		},
+		{
+			"name": "toAttack",
+			"inputs": [
+				{"name":"value","type":"int256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendAllValueAndDestroyed",
+			"inputs": [
+			],
+			"outputs": [
 			]
 		}
 	],
