@@ -1,0 +1,39 @@
+{
+	"ABI version": 2,
+	"version": "2.1",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"_depth","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deploy",
+			"inputs": [
+				{"name":"_value","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"addr","type":"address"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"m_value","type":"uint256"},
+		{"key":2,"name":"m_parent","type":"address"}
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"m_value","type":"uint256"},
+		{"name":"m_parent","type":"address"},
+		{"name":"m_depth","type":"uint256"},
+		{"name":"m_chilred","type":"map(address,bool)"}
+	]
+}
