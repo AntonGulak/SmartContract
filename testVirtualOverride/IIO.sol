@@ -5,7 +5,7 @@ pragma AbiHeader expire;
 interface IIO {
 
 
-    function set(int value) external; 
+    function set() external; 
 
      modifier checkOwner() {
 	  require(msg.pubkey() == tvm.pubkey(), 102);

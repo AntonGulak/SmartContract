@@ -34,8 +34,8 @@ async function main(client) {
     // Request contract deployment funds form a local TON OS SE giver
     // not suitable for other networks.
     // Deploy `hello` contract.
-    // await helloAcc.deploy({ useGiver: true });
-    // console.log(`Hello contract was deployed at address: ${address}`);
+    await helloAcc.deploy({ useGiver: true });
+    console.log(`Hello contract was deployed at address: ${address}`);
 
     // // Call `touch` function
     // let response = await helloAcc.run("touch", {});

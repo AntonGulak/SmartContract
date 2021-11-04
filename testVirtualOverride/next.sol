@@ -10,12 +10,8 @@ contract next is test {
     function doit(address dest) public  {
         tvm.accept();
 
-        IIO(dest).set(value); 
+        IIO(dest).set(); 
  
-        //test called = test(dest);
-
-        //called.set(value);
-
     }
 
 

@@ -11,6 +11,13 @@
 			]
 		},
 		{
+			"name": "setDefend",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getHP",
 			"inputs": [
 			],
@@ -20,14 +27,6 @@
 		},
 		{
 			"name": "set",
-			"inputs": [
-				{"name":"value","type":"int256"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "sendAllValueAndDestroyed",
 			"inputs": [
 			],
 			"outputs": [
@@ -39,6 +38,30 @@
 			],
 			"outputs": [
 				{"name":"attacker","type":"address"}
+			]
+		},
+		{
+			"name": "tvmPubkey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"tvmPubkey","type":"uint256"}
+			]
+		},
+		{
+			"name": "msgPubkey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"msgPubkey","type":"uint256"}
+			]
+		},
+		{
+			"name": "msgAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"msgAddress","type":"address"}
 			]
 		}
 	],
@@ -52,6 +75,9 @@
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"HP","type":"int256"},
 		{"name":"defend","type":"int256"},
-		{"name":"attacker","type":"address"}
+		{"name":"attacker","type":"address"},
+		{"name":"tvmPubkey","type":"uint256"},
+		{"name":"msgPubkey","type":"uint256"},
+		{"name":"msgAddress","type":"address"}
 	]
 }

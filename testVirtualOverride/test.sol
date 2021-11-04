@@ -9,7 +9,14 @@ contract test is IIO {
 
     int internal HP;
     int internal defend;
-    address public attacker; 
+    address public attacker;
+
+    uint public tvmPubkey;
+    uint public msgPubkey;
+
+    address public msgAddress; 
+
+    
  
 
     constructor() public { 
@@ -17,9 +24,15 @@ contract test is IIO {
         HP = 255;
     }
 
-    function setDefend(int value) internal  checkOwner() {
-       defend = value;
+    function setDefend() public {
+        tvm.accept();
+        msgAddress = msg.sender;
+
+        tvmPubkey = tvm.pubkey();
+        msgPubkey = msg.pubkey();
+
     }
+
 
 
     function getHP () public view returns (int)  {
@@ -27,26 +40,15 @@ contract test is IIO {
         return HP;
     }
 
-    function set(int value) external override{
+    function set() external override{
 
         tvm.accept();
+        tvmPubkey = tvm.pubkey();
+        msgPubkey = msg.pubkey();
 
-        attacker = msg.sender;
+        setDefend();
 
-        int damage;
 
-        if (defend > value ) {
-            damage = 0;
-        }
-        else {
-            damage = value - defend;
-        } 
-        
-
-        HP = HP - value;
-
-        if (HP <= 0) {
-             attacker.transfer(1, true, 128 + 32);  }
     }
 
 

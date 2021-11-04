@@ -17,7 +17,7 @@ contract token {
         uint price;
         uint index;
     }
-
+F
 
 // Массив токенов, чтобы там хранить все токены
 Token [] tokenArr;
