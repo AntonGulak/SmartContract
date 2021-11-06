@@ -13,7 +13,7 @@ fi
 DEBOT_NAME=helloDebot
 giver=0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94
 function giver {
-./tonos-cli --url http://127.0.0.1 call --abi ../local_giver.abi.json $giver sendGrams "{\"dest\":\"$1\",\"amount\":10000000000}"
+./tonos-cli --url http://127.0.0.1 call --abi ../base//local_giver.abi.json $giver sendGrams "{\"dest\":\"$1\",\"amount\":10000000000}"
 }
 function get_address {
 echo $(cat log.log | grep "Raw address:" | cut -d ' ' -f 3)

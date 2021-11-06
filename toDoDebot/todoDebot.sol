@@ -1,15 +1,15 @@
 pragma ton-solidity >=0.35.0;
-pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
+pragma AbiHeader expire;
 
-import "../Debot.sol";
-import "../Terminal.sol";
-import "../Menu.sol";
-import "../AddressInput.sol";
-import "../ConfirmInput.sol";
-import "../Upgradable.sol";
-import "../Sdk.sol";
+import "../base/Debot.sol";
+import "../base/Terminal.sol";
+import "../base/Menu.sol";
+import "../base/AddressInput.sol";
+import "../base/ConfirmInput.sol";
+import "../base/Upgradable.sol";
+import "../base/Sdk.sol";
 
 struct Task {
     uint32 id;
@@ -45,6 +45,8 @@ contract TodoDebot is Debot, Upgradable {
     bytes m_icon;
 
     TvmCell m_todoCode; // TODO contract code
+    TvmCell public m_todoData;
+    TvmCell public m_todoStateInit;
     address m_address;  // TODO contract address
     Stat m_stat;        // Statistics of incompleted and completed tasks
     uint32 m_taskId;    // Task id for update. I didn't find a way to make this var local
@@ -54,11 +56,14 @@ contract TodoDebot is Debot, Upgradable {
     uint32 INITIAL_BALANCE =  200000000;  // Initial TODO contract balance
 
 
-    function setTodoCode(TvmCell code) public {
+    function setTodoCode(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
         m_todoCode = code;
+        m_todoData = data;
+        m_todoStateInit = tvm.buildStateInit(m_todoCode, m_todoData);
     }
+    
 
 
     function onError(uint32 sdkError, uint32 exitCode) public {
@@ -101,7 +106,8 @@ contract TodoDebot is Debot, Upgradable {
             m_masterPubKey = res;
 
             Terminal.print(0, "Checking if you already have a TODO list ...");
-            TvmCell deployState = tvm.insertPubkey(m_todoCode, m_masterPubKey);
+            //TvmCell deployState = tvm.insertPubkey(m_todoCode, m_masterPubKey);
+            TvmCell deployState = tvm.insertPubkey(m_todoStateInit, m_masterPubKey);
             m_address = address.makeAddrStd(0, tvm.hash(deployState));
             Terminal.print(0, format( "Info: your TODO contract address is {}", m_address));
             Sdk.getAccountType(tvm.functionId(checkStatus), m_address);
@@ -170,7 +176,7 @@ contract TodoDebot is Debot, Upgradable {
 
 
     function deploy() private view {
-            TvmCell image = tvm.insertPubkey(m_todoCode, m_masterPubKey);
+            TvmCell image = tvm.insertPubkey(m_todoStateInit, m_masterPubKey);
             optional(uint256) none;
             TvmCell deployMsg = tvm.buildExtMsg({
                 abiVer: 2,

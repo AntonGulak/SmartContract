@@ -90,3 +90,4 @@ contract Todo {
         stat = Stat( completeCount, incompleteCount );
     }
 }
+
