@@ -56,10 +56,12 @@ contract TodoDebot is Debot, Upgradable {
     uint32 INITIAL_BALANCE =  200000000;  // Initial TODO contract balance
 
 
-    function setTodoCode(TvmCell code) public {
+    function setTodoCode(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
         m_todoCode = code;
+        m_todoData = data;
+
         m_todoStateInit = tvm.buildStateInit(m_todoCode, m_todoData);
     }
 
