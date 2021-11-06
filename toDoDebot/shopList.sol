@@ -4,7 +4,7 @@ pragma AbiHeader pubkey;
 
 import "shop.sol";
 
-contract shopList is shopInter, HasConstructorWithPubKey{
+contract shopList is ShopInter, HasConstructorWithPubKey{
     
     uint256 public m_ownerPubkey;
     uint32 m_count;

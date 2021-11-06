@@ -1,11 +1,20 @@
 pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 
+
 abstract contract HasConstructorWithPubKey {
+
    constructor(uint256 pubkey) public {}
 }
 
-interface shopInter {
+
+interface Transactable {
+
+   function sendTransaction(address dest, uint128 value, bool bounce, uint8 flags, TvmCell payload  ) external;
+}
+
+
+interface ShopInter {
 
     struct Purchase {
         uint32 id;
