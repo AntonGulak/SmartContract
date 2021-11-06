@@ -53,6 +53,14 @@
 			"outputs": [
 				{"components":[{"name":"completeCount","type":"uint32"},{"name":"incompleteCount","type":"uint32"},{"name":"amountPrice","type":"uint256"}],"name":"stat","type":"tuple"}
 			]
+		},
+		{
+			"name": "m_ownerPubkey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"m_ownerPubkey","type":"uint256"}
+			]
 		}
 	],
 	"data": [

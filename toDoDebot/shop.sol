@@ -1,14 +1,11 @@
 pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 
-abstract contract shopInter {
+abstract contract HasConstructorWithPubKey {
+   constructor(uint256 pubkey) public {}
+}
 
-    uint256 m_ownerPubkey;
-
-    modifier onlyOwner() {
-        require(msg.pubkey() == m_ownerPubkey, 101);
-        _;
-    }
+interface shopInter {
 
     struct Purchase {
         uint32 id;
@@ -25,9 +22,9 @@ abstract contract shopInter {
         uint amountPrice;
     }
     
-    //function createPurchase(string title, uint32 amount) virtual public ;
-    //function updatePurchase(uint32 id, bool _isSoldOut, uint32 _cost) virtual public;
-    //function deletePurchase(uint32 id) virtual public;
-    //function getPurchases() virtual public view returns (Purchase[] purchases);
-    //function getStat() virtual public view returns (Stat stat);
+    function createPurchase(string title, uint32 amount)  external ;
+    function updatePurchase(uint32 id, bool _isSoldOut, uint32 _cost) external;
+    function deletePurchase(uint32 id) external;
+    function getPurchases() external view returns (Purchase[] purchases);
+    function getStat() external view returns (Stat stat);
 }
