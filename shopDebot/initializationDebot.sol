@@ -91,7 +91,7 @@ abstract contract initializationDebot is Debot, Upgradable {
         }
     } 
 
-    function _getStat(uint32 answerId) private view {
+    function _getStat(uint32 answerId) internal view {
         optional(uint256) none;
         ShopInter(m_address).getStat{
             abiVer: 2,
