@@ -16,7 +16,7 @@ contract fillShipLIstDebot is initializationDebot {
          sep, 
          [
             MenuItem("Add new product", "", tvm.functionId(getNamePurchase))
-            //MenuItem("Show shopList", "", tvm.functionId(getPurchases)),
+            //MenuItem("Show shopList", "", tvm.functionId(getPurchases))
             //MenuItem("Delete product", "", tvm.functionId(deletePurchase))
 
         ]);
@@ -28,9 +28,14 @@ contract fillShipLIstDebot is initializationDebot {
         Terminal.input(tvm.functionId(createPurchase_), "Enter product name:", false);
     }
 
-    function createPurchase_(string valueAmount) public {
-        //inputPur.amount = valueAmount;
-        inputPur.title = valueAmount;
+    function getAmountPurchase(string value) public {
+        inputPur.title = value;
+        Terminal.input(tvm.functionId(createPurchase_), "Enter product name:", false);
+    }
+
+    function createPurchase_(string value) public {
+        (inputPur.amount, ) = stoi(value);
+     
 
         optional(uint256) pubkey = 0;
         ShopInter(m_address).createPurchase{
@@ -43,7 +48,7 @@ contract fillShipLIstDebot is initializationDebot {
                 callbackId: tvm.functionId(onSuccess),
                 onErrorId: tvm.functionId(onError)
      
-            }(inputPur.title, 1);
+            }(value, 1);
     }
 
 
