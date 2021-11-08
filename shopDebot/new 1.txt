@@ -1,0 +1,33 @@
++ Изменить содержимое fillShipListDebot.sol в соответствии с тем, как в начале видео
++ tondev sol compile Todo.sol
++ tonos-cli decode stateinit Todo.tvc --tvc
++ сохранить Todo.decode.json
++ tondev sol compile fillShipListDebot.sol
++? tonos-cli genaddr fillShipListDebot.tvc fillShipListDebot.abi.json --genkey fillShipListDebot.keys.json > log.log
+=- Заполнить файл params.json
+В моем случае:
+{
+    "dest": "0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f",
+    "amount": 10000000000
+}
+Закинуть денег
+=- tonos-cli --url https://net.ton.dev call --abi ../base/Local_giver.abi.json 0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94 sendGrams params.json
+вместо этого EXTRATON
+Задеплоить
+tonos-cli --url https://net.ton.dev deploy fillShipListDebot.tvc "{}" --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
++ bash
++ cat fillShipListDebot.abi.json | xxd -p -c 20000
+exit
++ Записать dabi.json - в моем случае:
+{
+    "dabi": "7b0d0a0........d0a7d0d0a"
+}
+Установить dabi
+tonos-cli --url https://net.ton.dev call 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f setABI dabi.json --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
+!!!!!!!!!
+вызвать
+=- tonos-cli --url https://net.ton.dev run --abi fillShipListDebot.abi.json 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f getDebotInfo "{}"
+предварительно сформировать Todo.decode.json
+tonos-cli --url https://net.ton.dev call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f setTodoCode Todo.decode.json
+Вызываем дебота
+=- tonos-cli --url https://net.ton.dev debot --debug fetch 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f

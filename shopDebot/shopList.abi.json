@@ -1,6 +1,5 @@
 {
 	"ABI version": 2,
-	"version": "2.1",
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
@@ -14,7 +13,7 @@
 		{
 			"name": "createPurchase",
 			"inputs": [
-				{"name":"title","type":"string"},
+				{"name":"title","type":"bytes"},
 				{"name":"amount","type":"uint32"}
 			],
 			"outputs": [
@@ -43,7 +42,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"components":[{"name":"id","type":"uint32"},{"name":"title","type":"string"},{"name":"amount","type":"uint32"},{"name":"createdAt","type":"uint64"},{"name":"isSoldOut","type":"bool"},{"name":"cost","type":"uint256"}],"name":"purchases","type":"tuple[]"}
+				{"components":[{"name":"id","type":"uint32"},{"name":"title","type":"bytes"},{"name":"amount","type":"uint32"},{"name":"createdAt","type":"uint64"},{"name":"isSoldOut","type":"bool"},{"name":"cost","type":"uint256"}],"name":"purchases","type":"tuple[]"}
 			]
 		},
 		{
@@ -53,18 +52,18 @@
 			"outputs": [
 				{"components":[{"name":"completeCount","type":"uint32"},{"name":"incompleteCount","type":"uint32"},{"name":"amountPrice","type":"uint256"}],"name":"stat","type":"tuple"}
 			]
+		},
+		{
+			"name": "m_ownerPubkey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"m_ownerPubkey","type":"uint256"}
+			]
 		}
 	],
 	"data": [
 	],
 	"events": [
-	],
-	"fields": [
-		{"name":"_pubkey","type":"uint256"},
-		{"name":"_timestamp","type":"uint64"},
-		{"name":"_constructorFlag","type":"bool"},
-		{"name":"m_ownerPubkey","type":"uint256"},
-		{"name":"m_count","type":"uint32"},
-		{"components":[{"name":"id","type":"uint32"},{"name":"title","type":"string"},{"name":"amount","type":"uint32"},{"name":"createdAt","type":"uint64"},{"name":"isSoldOut","type":"bool"},{"name":"cost","type":"uint256"}],"name":"m_purchases","type":"map(uint32,tuple)"}
 	]
 }
