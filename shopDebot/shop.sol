@@ -18,23 +18,23 @@ interface Transactable {
 interface ShopInter {
 
     struct Purchase {
-        uint32 id;
+        uint256 id;
         string title;
-        uint32 amount;
-        uint64 createdAt;
+        uint256 amount;
+        uint256 createdAt;
         bool isSoldOut;
-        uint cost;
+        uint256 cost;
     }
 
     struct Stat {
-        uint32 completeCount;
-        uint32 incompleteCount;
-        uint amountPrice;
+        uint256 completeCount;
+        uint256 incompleteCount;
+        uint256 amountPrice;
     }
     
     function createPurchase(string title, uint32 amount)  external ;
-    function updatePurchase(uint32 id, bool _isSoldOut, uint32 _cost) external;
-    function deletePurchase(uint32 id) external;
+    function updatePurchase(uint256 id, bool _isSoldOut, uint256 _cost) external;
+    function deletePurchase(uint256 id) external;
     function getPurchases() external view returns (Purchase[] purchases);
     function getStat() external view returns (Stat stat);
 }

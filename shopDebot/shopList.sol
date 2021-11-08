@@ -8,9 +8,9 @@ import "shop.sol";
 contract shopList is ShopInter, HasConstructorWithPubKey{
     
     uint256 public m_ownerPubkey;
-    uint32 m_count;
+    uint256 m_count;
 
-    mapping(uint32 => Purchase) m_purchases;
+    mapping(uint256 => Purchase) m_purchases;
 
     modifier onlyOwner() {
         require(msg.pubkey() == m_ownerPubkey, 101);
@@ -25,12 +25,13 @@ contract shopList is ShopInter, HasConstructorWithPubKey{
     }
 
     function createPurchase(string title, uint32 amount) public override {
-        tvm.accept();
-
-        m_purchases[m_count++] = Purchase(m_count, title, amount, now, false, 0);
+        tvm.accept()
+        ;
+        m_count++;
+        m_purchases[m_count] = Purchase(m_count, title, amount, now, false, 0);
     }
 
-    function updatePurchase(uint32 id, bool _isSoldOut, uint32 _cost) public onlyOwner override {
+    function updatePurchase(uint256 id, bool _isSoldOut, uint256 _cost) public onlyOwner override {
         optional(Purchase) purchase = m_purchases.fetch(id);
         require(purchase.hasValue(), 102);
         tvm.accept();
@@ -41,7 +42,7 @@ contract shopList is ShopInter, HasConstructorWithPubKey{
         m_purchases[id] = thisPurchase;
     }
 
-    function deletePurchase(uint32 id) public onlyOwner override {
+    function deletePurchase(uint256 id) public onlyOwner override {
         require(m_purchases.exists(id), 102);
         tvm.accept();
 
@@ -51,12 +52,12 @@ contract shopList is ShopInter, HasConstructorWithPubKey{
 
     function getPurchases() public view  override returns (Purchase[] purchases) {
         string title;
-        uint32 amount;
-        uint64 createdAt;
+        uint256 amount;
+        uint256 createdAt;
         bool isSoldOut;
-        uint cost;
+        uint256 cost;
 
-        for((uint32 id, Purchase purchase) : m_purchases) {
+        for((uint256 id, Purchase purchase) : m_purchases) {
             
             title = purchase.title;
             amount = purchase.amount;
@@ -69,9 +70,9 @@ contract shopList is ShopInter, HasConstructorWithPubKey{
     }
 
     function getStat() public view  override returns (Stat stat) {
-        uint32 completeCount;
-        uint32 incompleteCount;
-        uint amountPrice;
+        uint256 completeCount;
+        uint256 incompleteCount;
+        uint256 amountPrice;
 
         for((, Purchase purchase) : m_purchases) {
             amountPrice += purchase.cost;
