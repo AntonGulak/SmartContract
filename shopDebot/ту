@@ -8,7 +8,7 @@ tonos-cli genaddr fillShipListDebot.tvc fillShipListDebot.abi.json --genkey fill
 Заполнить файл params.json
 В моем случае:
 {
-    "dest": "0:a4ff633b5406481646c51fcd5022c4bfe18d37a70a83a29f1398be71c1587b75",
+    "dest": "0:854d4e81a1d977b55fb71e7a075e693c1f63145d91dbe940a67633670c505ade",
     "amount": 10000000000
 }
 Закинуть денег
@@ -23,12 +23,12 @@ exit
     "dabi": "7b0d0a0........d0a7d0d0a"
 }
 Установить dabi
-tonos-cli --url http://127.0.0.1 call 0:a4ff633b5406481646c51fcd5022c4bfe18d37a70a83a29f1398be71c1587b75 setABI dabi.json --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
+tonos-cli --url http://127.0.0.1 call 0:854d4e81a1d977b55fb71e7a075e693c1f63145d91dbe940a67633670c505ade setABI dabi.json --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
 !!!!!!!!!
 вызвать
-tonos-cli --url http://127.0.0.1 run --abi fillShipListDebot.abi.json 0:a4ff633b5406481646c51fcd5022c4bfe18d37a70a83a29f1398be71c1587b75 getDebotInfo "{}"
+tonos-cli --url http://127.0.0.1 run --abi fillShipListDebot.abi.json 0:854d4e81a1d977b55fb71e7a075e693c1f63145d91dbe940a67633670c505ade getDebotInfo "{}"
 предварительно сформировать shopList.decode.json
-tonos-cli --url http://127.0.0.1 call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:a4ff633b5406481646c51fcd5022c4bfe18d37a70a83a29f1398be71c1587b75 setTodoCode shopList.decode.json
+tonos-cli --url http://127.0.0.1 call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:854d4e81a1d977b55fb71e7a075e693c1f63145d91dbe940a67633670c505ade setTodoCode shopList.decode.json
 Вызываем дебота
 tonos-cli --url http://127.0.0.1 debot fetch 0:a9f1ad79dd52e874de8a93edb43dd496fcb7f3491eff9815cc8c1876da9ce9b4
 Ошибка, которую можно получить, если не перейти на иную работу со stateInit как в лекции:

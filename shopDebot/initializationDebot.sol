@@ -28,7 +28,7 @@ abstract contract initializationDebot is Debot, Upgradable {
 
     function statToString() public view returns (string) {
         return format(
-                "You have {}/{}/{} (todo/done/total) tasks  for a total of {}",
+                "You have {}/{}/{} (todo/done/total) purchases  for a total of {}",
                     m_stat.incompleteCount,
                     m_stat.completeCount,
                     m_stat.completeCount + m_stat.incompleteCount,
@@ -40,7 +40,7 @@ abstract contract initializationDebot is Debot, Upgradable {
         string name, string version, string publisher, string key, string author,
         address support, string hello, string language, string dabi, bytes icon
     ) {
-        name = "TODO DeBot";
+        name = "ShopList DeBot";
         version = "0.2.0";
         publisher = "";
         key = "Shop list manager";
