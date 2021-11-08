@@ -4,50 +4,20 @@ pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
 import "../base/Debot.sol";
-import "../base/Terminal.sol";
 import "../base/Menu.sol";
+import "../base/Terminal.sol";
 import "../base/AddressInput.sol";
 import "../base/ConfirmInput.sol";
 import "../base/Upgradable.sol";
 import "../base/Sdk.sol";
+import "IShopping.sol";
 
-struct Task {
-    uint32 id;
-    string text;
-    uint64 createdAt;
-    bool isDone;
-}
-
-struct Stat {
-    uint32 completeCount;
-    uint32 incompleteCount;
-}
-
-interface IMsig {
-   function sendTransaction(address dest, uint128 value, bool bounce, uint8 flags, TvmCell payload  ) external;
-}
-
-
-abstract contract ATodo {
-   constructor(uint256 pubkey) public {}
-}
-
-interface ITodo {
-   function createTask(string text) external;
-   function updateTask(uint32 id, bool done) external;
-   function deleteTask(uint32 id) external;
-   function getTasks() external returns (Task[] tasks);
-   function getStat() external returns (Stat);
-}
-
-
-contract TodoDebot is Debot, Upgradable {
+contract ShoppingListDebot is Debot, Upgradable {
     bytes m_icon;
 
     TvmCell public m_todoCode; // TODO contract code
     TvmCell public m_todoData; // TODO contract data
     TvmCell public m_todoStateInit; // TODO contract StateInit
-
     address m_address;  // TODO contract address
     Stat m_stat;        // Statistics of incompleted and completed tasks
     uint32 m_taskId;    // Task id for update. I didn't find a way to make this var local
@@ -106,7 +76,7 @@ contract TodoDebot is Debot, Upgradable {
             m_masterPubKey = res;
 
             Terminal.print(0, "Checking if you already have a TODO list ...");
-            TvmCell deployState = tvm.insertPubkey(m_todoCode, m_masterPubKey);
+            TvmCell deployState = tvm.insertPubkey(m_todoStateInit, m_masterPubKey);
             m_address = address.makeAddrStd(0, tvm.hash(deployState));
             Terminal.print(0, format( "Info: your TODO contract address is {}", m_address));
             Sdk.getAccountType(tvm.functionId(checkStatus), m_address);

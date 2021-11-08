@@ -3,6 +3,7 @@ pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
+
 import "initializationDebot.sol";
 
 contract fillShipLIstDebot is initializationDebot {
@@ -24,16 +25,12 @@ contract fillShipLIstDebot is initializationDebot {
 
     function getNamePurchase(uint32 index) public {
         index = index;
-        Terminal.input(tvm.functionId(getAmountPurchase), "Enter product name:", false);
+        Terminal.input(tvm.functionId(createPurchase_), "Enter product name:", false);
     }
 
-    function getAmountPurchase(string name) public {
-        inputPur.title = name;
-        Terminal.input(tvm.functionId(createPurchase_), "Enter amount:", false);
-    }
-
-    function createPurchase_(uint32 valueAmount) public {
-        inputPur.amount = valueAmount;
+    function createPurchase_(string valueAmount) public {
+        //inputPur.amount = valueAmount;
+        inputPur.title = valueAmount;
 
         optional(uint256) pubkey = 0;
         ShopInter(m_address).createPurchase{
@@ -46,7 +43,7 @@ contract fillShipLIstDebot is initializationDebot {
                 callbackId: tvm.functionId(onSuccess),
                 onErrorId: tvm.functionId(onError)
      
-            }(inputPur.title, inputPur.amount);
+            }(inputPur.title, 1);
     }
 
 

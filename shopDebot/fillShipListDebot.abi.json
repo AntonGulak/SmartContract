@@ -11,17 +11,9 @@
 			]
 		},
 		{
-			"name": "getAmountPurchase",
-			"inputs": [
-				{"name":"name","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "createPurchase_",
 			"inputs": [
-				{"name":"valueAmount","type":"uint32"}
+				{"name":"valueAmount","type":"bytes"}
 			],
 			"outputs": [
 			]

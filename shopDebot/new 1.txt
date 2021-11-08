@@ -8,7 +8,7 @@
 =- Заполнить файл params.json
 В моем случае:
 {
-    "dest": "0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0",
+    "dest": "0:0:d6708e23643d59278e4ee2e265ef8d3038b6ef99f584f0787722c6ff437a2c9b",
     "amount": 10000000000
 }
 Закинуть денег
@@ -24,11 +24,11 @@ exit
     "dabi": "7b0d0a0........d0a7d0d0a"
 }
 Установить dabi
-tonos-cli --url https://net.ton.dev call 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0 setABI dabi.json --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
+tonos-cli --url https://net.ton.dev call 0:0:19b1ff538910caa6db8d39ec8060e9b9f1abb4d7bb54696a180d8a2bd315cd72 setABI dabi.json --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
 !!!!!!!!!
 вызвать
-=- tonos-cli --url https://net.ton.dev run --abi fillShipListDebot.abi.json 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0 getDebotInfo "{}"
+=- tonos-cli --url https://net.ton.dev run --abi fillShipListDebot.abi.json 0:0:19b1ff538910caa6db8d39ec8060e9b9f1abb4d7bb54696a180d8a2bd315cd72 getDebotInfo "{}"
 предварительно сформировать Todo.decode.json
-tonos-cli --url https://net.ton.dev call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0 setTodoCode shopList.decode.json
+tonos-cli --url https://net.ton.dev call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:19b1ff538910caa6db8d39ec8060e9b9f1abb4d7bb54696a180d8a2bd315cd72 setTodoCode shopList.decode.json
 Вызываем дебота
-=- tonos-cli --url https://net.ton.dev debot --debug fetch 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0
+=- tonos-cli --url https://net.ton.dev debot --debug fetch 0:0:d6708e23643d59278e4ee2e265ef8d3038b6ef99f584f0787722c6ff437a2c9b
