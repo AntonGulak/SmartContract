@@ -109,8 +109,13 @@ contract TodoDebot is Debot, Upgradable {
             //TvmCell deployState = tvm.insertPubkey(m_todoCode, m_masterPubKey);
             TvmCell deployState = tvm.insertPubkey(m_todoStateInit, m_masterPubKey);
             m_address = address.makeAddrStd(0, tvm.hash(deployState));
+
+            
             Terminal.print(0, format( "Info: your TODO contract address is {}", m_address));
+        
+
             Sdk.getAccountType(tvm.functionId(checkStatus), m_address);
+
 
         } else {
             Terminal.input(tvm.functionId(savePublicKey),"Wrong public key. Try again!\nPlease enter your public key",false);
