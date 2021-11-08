@@ -23,7 +23,7 @@ contract shopList is ShopInter, HasConstructorWithPubKey{
         m_ownerPubkey = pubkey;
     }
 
-    function createPurchase(string title, uint32 amount) public onlyOwner override {
+    function createPurchase(string title, uint32 amount) public  override {
         tvm.accept();
 
         m_purchases[m_count++] = Purchase(m_count, title, amount, now, false, 0);

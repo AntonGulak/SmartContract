@@ -45,8 +45,8 @@ contract TodoDebot is Debot, Upgradable {
     bytes m_icon;
 
     TvmCell m_todoCode; // TODO contract code
-    TvmCell m_todoStateInit;
-    TvmCell m_todoData;
+    TvmCell m_todoStateInit; // TODO contract code
+    TvmCell m_todoData; // TODO contract code
     address m_address;  // TODO contract address
     Stat m_stat;        // Statistics of incompleted and completed tasks
     uint32 m_taskId;    // Task id for update. I didn't find a way to make this var local
@@ -59,9 +59,9 @@ contract TodoDebot is Debot, Upgradable {
     function setTodoCode(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
+
         m_todoCode = code;
         m_todoData = data;
-
         m_todoStateInit = tvm.buildStateInit(m_todoCode, m_todoData);
     }
 
@@ -109,13 +109,8 @@ contract TodoDebot is Debot, Upgradable {
             //TvmCell deployState = tvm.insertPubkey(m_todoCode, m_masterPubKey);
             TvmCell deployState = tvm.insertPubkey(m_todoStateInit, m_masterPubKey);
             m_address = address.makeAddrStd(0, tvm.hash(deployState));
-
-            
             Terminal.print(0, format( "Info: your TODO contract address is {}", m_address));
-        
-
             Sdk.getAccountType(tvm.functionId(checkStatus), m_address);
-
 
         } else {
             Terminal.input(tvm.functionId(savePublicKey),"Wrong public key. Try again!\nPlease enter your public key",false);

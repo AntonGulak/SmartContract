@@ -3,6 +3,38 @@
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
+			"name": "getNamePurchase",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getAmountPurchase",
+			"inputs": [
+				{"name":"name","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createPurchase_",
+			"inputs": [
+				{"name":"valueAmount","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "statToString",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"bytes"}
+			]
+		},
+		{
 			"name": "getDebotInfo",
 			"id": "0xDEB",
 			"inputs": [
@@ -112,6 +144,15 @@
 			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
 			],
 			"outputs": [
 			]

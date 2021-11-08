@@ -1,13 +1,14 @@
-+ Изменить содержимое fillShipListDebot.sol в соответствии с тем, как в начале видео
-+ tondev sol compile Todo.sol
-+ tonos-cli decode stateinit Todo.tvc --tvc
-+ сохранить Todo.decode.json
++ tondev sol compile shopList.sol
++ tonos-cli decode stateinit shopList.tvc --tvc
++ сохранить shopList.decode.json
+
+
 + tondev sol compile fillShipListDebot.sol
 +? tonos-cli genaddr fillShipListDebot.tvc fillShipListDebot.abi.json --genkey fillShipListDebot.keys.json > log.log
 =- Заполнить файл params.json
 В моем случае:
 {
-    "dest": "0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f",
+    "dest": "0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0",
     "amount": 10000000000
 }
 Закинуть денег
@@ -23,11 +24,11 @@ exit
     "dabi": "7b0d0a0........d0a7d0d0a"
 }
 Установить dabi
-tonos-cli --url https://net.ton.dev call 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f setABI dabi.json --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
+tonos-cli --url https://net.ton.dev call 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0 setABI dabi.json --sign fillShipListDebot.keys.json --abi fillShipListDebot.abi.json
 !!!!!!!!!
 вызвать
-=- tonos-cli --url https://net.ton.dev run --abi fillShipListDebot.abi.json 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f getDebotInfo "{}"
+=- tonos-cli --url https://net.ton.dev run --abi fillShipListDebot.abi.json 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0 getDebotInfo "{}"
 предварительно сформировать Todo.decode.json
-tonos-cli --url https://net.ton.dev call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f setTodoCode Todo.decode.json
+tonos-cli --url https://net.ton.dev call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0 setTodoCode shopList.decode.json
 Вызываем дебота
-=- tonos-cli --url https://net.ton.dev debot --debug fetch 0:3ae651019d1e94d9aa0e08a7548342170d86a62f9347893485d2ac50728cba3f
+=- tonos-cli --url https://net.ton.dev debot --debug fetch 0:d55d7a09ef3c673608f2019f534a72d4cf3b0e710268903f3ba32009189694c0

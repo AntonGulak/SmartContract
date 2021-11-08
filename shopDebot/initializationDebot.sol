@@ -26,6 +26,16 @@ abstract contract initializationDebot is Debot, Upgradable {
     address m_msigAddress;
     uint32 INITIAL_BALANCE =  200000000;   
 
+    function statToString() public view returns (string) {
+        return format(
+                "You have {}/{}/{} (todo/done/total) tasks  for a total of {}",
+                    m_stat.incompleteCount,
+                    m_stat.completeCount,
+                    m_stat.completeCount + m_stat.incompleteCount,
+                    m_stat.amountPrice
+            );
+    }
+
     function getDebotInfo() public functionID(0xDEB) override view returns(
         string name, string version, string publisher, string key, string author,
         address support, string hello, string language, string dabi, bytes icon
@@ -49,6 +59,8 @@ abstract contract initializationDebot is Debot, Upgradable {
     function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
         return [ Terminal.ID, Menu.ID, AddressInput.ID, ConfirmInput.ID ];
     }
+
+
 
 
     function start() public override {
@@ -187,7 +199,11 @@ abstract contract initializationDebot is Debot, Upgradable {
 
         m_todoStateInit = tvm.buildStateInit(m_todoCode, m_todoData);
     }
-
+    
+    function onError(uint32 sdkError, uint32 exitCode) public {
+        Terminal.print(0, format("Operation failed. sdkError {}, exitCode {}", sdkError, exitCode));
+        _menu();
+    }
 
 
 }
