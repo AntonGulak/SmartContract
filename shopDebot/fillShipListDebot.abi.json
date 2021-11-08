@@ -13,7 +13,7 @@
 		{
 			"name": "createPurchase_",
 			"inputs": [
-				{"name":"value","type":"bytes"}
+				{"name":"valueAmount","type":"bytes"}
 			],
 			"outputs": [
 			]
