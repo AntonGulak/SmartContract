@@ -24,11 +24,7 @@ abstract contract initializationDebot is Debot, Upgradable {
     uint32 m_taskId;
     uint256 m_masterPubKey;
     address m_msigAddress;
-    uint32 INITIAL_BALANCE =  200000000;  
-
-    function getAddress() view external returns (address dest) {
-        dest = m_address;
-    }
+    uint32 INITIAL_BALANCE =  200000000;   
 
     function statToString() public view returns (string) {
         return format(
