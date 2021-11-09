@@ -5,8 +5,9 @@ pragma AbiHeader pubkey;
 
 
 import "initializationDebot.sol";
+import "functionMenu/createPurchase.sol";
 
-contract fillShipLIstDebot is initializationDebot {
+contract fillShipLIstDebot is initializationDebot, create {
 
     ShopInter.Purchase private inputPur;
 
@@ -15,7 +16,7 @@ contract fillShipLIstDebot is initializationDebot {
         Menu.select(statToString(),
          sep, 
          [
-            MenuItem("Add new product", "", tvm.functionId(getNamePurchase)),
+            MenuItem("Add new product", "", tvm.functionId(createPurchase)),
             MenuItem("Show shopList", "", tvm.functionId(getPurchases)),
             MenuItem("Delete product", "", tvm.functionId(deletePurchase))
 
@@ -23,33 +24,7 @@ contract fillShipLIstDebot is initializationDebot {
         
     } //end menu
 
-    function getNamePurchase(uint32 index) public {
-        index = index;
-        Terminal.input(tvm.functionId(getAmountPurchase), "Enter product name:", false);
-    }
 
-    function getAmountPurchase(string value) public {
-        inputPur.title = value;
-        Terminal.input(tvm.functionId(createPurchase_), "Enter amount:", false);
-    }
-
-    function createPurchase_(string value) public {
-        (uint256 amount, ) = stoi(value);
-        inputPur.amount = uint32(amount);
-
-        optional(uint256) pubkey = 0;
-        ShopInter(m_address).createPurchase{
-                abiVer: 2,
-                extMsg: true,
-                sign: true,
-                pubkey: pubkey,
-                time: uint64(now),
-                expire: 0,
-                callbackId: tvm.functionId(onSuccess),
-                onErrorId: tvm.functionId(onError)
-     
-            }(inputPur.title, inputPur.amount);
-    }
     
      function getPurchases(uint32 index) public view {
         index = index;
