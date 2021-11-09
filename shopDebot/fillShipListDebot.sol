@@ -16,8 +16,8 @@ contract fillShipLIstDebot is initializationDebot {
          sep, 
          [
             MenuItem("Add new product", "", tvm.functionId(getNamePurchase)),
-            MenuItem("Show shopList", "", tvm.functionId(getPurchases))
-            //MenuItem("Delete product", "", tvm.functionId(deletePurchase))
+            MenuItem("Show shopList", "", tvm.functionId(getPurchases)),
+            MenuItem("Delete product", "", tvm.functionId(deletePurchase))
 
         ]);
         
@@ -25,18 +25,17 @@ contract fillShipLIstDebot is initializationDebot {
 
     function getNamePurchase(uint32 index) public {
         index = index;
-        Terminal.input(tvm.functionId(createPurchase_), "Enter product name:", false);
+        Terminal.input(tvm.functionId(getAmountPurchase), "Enter product name:", false);
     }
 
     function getAmountPurchase(string value) public {
         inputPur.title = value;
-        Terminal.input(tvm.functionId(createPurchase_), "Enter product name:", false);
+        Terminal.input(tvm.functionId(createPurchase_), "Enter amount:", false);
     }
 
     function createPurchase_(string value) public {
         (uint256 amount, ) = stoi(value);
         inputPur.amount = uint32(amount);
-     
 
         optional(uint256) pubkey = 0;
         ShopInter(m_address).createPurchase{
@@ -81,12 +80,37 @@ contract fillShipLIstDebot is initializationDebot {
                 } else {
                     completed = ' ';
                 }
-                Terminal.print(0, format("{} {}  \"{}\"  at {}, amout: {}  for {}", purchas.id, completed, purchas.title, purchas.createdAt, purchas.amount, purchas.cost));
+                Terminal.print(0, format("id: {} | {}  \"{}\"  at {}, amount: {}, the total cost:  {}", purchas.id, completed, purchas.title, purchas.createdAt, purchas.amount, purchas.cost));
             }
         } else {
             Terminal.print(0, "Your shopList is empty");
         }
         _menu();
+    }
+
+    function deletePurchase(uint32 index) public {
+        index = index;
+        if (m_stat.completeCount + m_stat.incompleteCount > 0) {
+            Terminal.input(tvm.functionId(deletePurchase_), "Enter task number:", false);
+        } else {
+            Terminal.print(0, "Sorry, you have no tasks to delete");
+            _menu();
+        }
+    }
+
+    function deletePurchase_(string value) public view {
+        (uint256 num,) = stoi(value);
+        optional(uint256) pubkey = 0;
+        ShopInter(m_address).deletePurchase{
+                abiVer: 2,
+                extMsg: true,
+                sign: true,
+                pubkey: pubkey,
+                time: uint64(now),
+                expire: 0,
+                callbackId: tvm.functionId(onSuccess),
+                onErrorId: tvm.functionId(onError)
+            }(uint32(num));
     }
 
 } //end contract
