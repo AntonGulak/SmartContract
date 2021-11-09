@@ -19,22 +19,6 @@
 			]
 		},
 		{
-			"name": "getPurchases",
-			"inputs": [
-				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getPurchases_",
-			"inputs": [
-				{"components":[{"name":"id","type":"uint32"},{"name":"title","type":"bytes"},{"name":"amount","type":"uint32"},{"name":"createdAt","type":"uint64"},{"name":"isSoldOut","type":"bool"},{"name":"cost","type":"uint256"}],"name":"purchases","type":"tuple[]"}
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "deletePurchase",
 			"inputs": [
 				{"name":"index","type":"uint32"}
@@ -45,6 +29,14 @@
 		{
 			"name": "deletePurchase_",
 			"inputs": [
+				{"name":"inp","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deletePurchase__",
+			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
 			"outputs": [
@@ -53,6 +45,7 @@
 		{
 			"name": "toBuy_",
 			"inputs": [
+				{"name":"inp","type":"address"}
 			],
 			"outputs": [
 			]
@@ -84,6 +77,7 @@
 		{
 			"name": "createPurchase_",
 			"inputs": [
+				{"name":"inp","type":"address"}
 			],
 			"outputs": [
 			]
@@ -102,6 +96,14 @@
 				{"name":"value","type":"bytes"}
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "mAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
 			]
 		},
 		{
@@ -236,6 +238,22 @@
 			]
 		},
 		{
+			"name": "getPurchases",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPurchases_",
+			"inputs": [
+				{"components":[{"name":"id","type":"uint32"},{"name":"title","type":"bytes"},{"name":"amount","type":"uint32"},{"name":"createdAt","type":"uint64"},{"name":"isSoldOut","type":"bool"},{"name":"cost","type":"uint256"}],"name":"purchases","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "upgrade",
 			"inputs": [
 				{"name":"state","type":"cell"}
@@ -267,14 +285,6 @@
 			"inputs": [
 			],
 			"outputs": [
-			]
-		},
-		{
-			"name": "m_address",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"m_address","type":"address"}
 			]
 		}
 	],

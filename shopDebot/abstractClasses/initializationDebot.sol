@@ -27,8 +27,8 @@ abstract contract initializationDebot is Debot, Upgradable {
     address m_msigAddress;
     uint32 INITIAL_BALANCE =  200000000;  
 
-    function getAdd() public view returns (address getAd) {
-        getAd =  m_address;
+    function mAddress() public view returns (address) {
+        return m_address;
     }
 
 
@@ -212,6 +212,47 @@ abstract contract initializationDebot is Debot, Upgradable {
         Terminal.print(0, format("Operation failed. sdkError {}, exitCode {}", sdkError, exitCode));
         _menu();
     }
+
+
+    //Не получится вынести отдельным классом, иначе придется платить за запись в переменную значения адреса 
+    function getPurchases(uint32 index) view public {
+
+            index = index;
+            
+            optional(uint256) none;
+
+            ShopInter(m_address).getPurchases{
+                abiVer: 2,
+                extMsg: true,
+                sign: false,
+                pubkey: none,
+                time: uint64(now),
+                expire: 0,
+                callbackId: tvm.functionId(getPurchases_),
+                onErrorId: 0
+            }();
+        }
+
+    function getPurchases_ (ShopInter.Purchase[] purchases) public {
+
+        uint32 i;
+      
+        Terminal.print(0, "Your shopList:");
+        for (i = 0; i < purchases.length; i++) {
+            ShopInter.Purchase purchas = purchases[i];
+            string completed;
+
+            if (purchas.isSoldOut) {
+                completed = '✓';
+            } else {
+                completed = ' ';
+            }
+            Terminal.print(0, format("id: {} | {}  \"{}\"  at {}, amount: {}, the total cost:  {}", purchas.id, completed, purchas.title, purchas.createdAt, purchas.amount, purchas.cost));
+        }
+      
+        _menu();
+    }
+
 
 
 }
