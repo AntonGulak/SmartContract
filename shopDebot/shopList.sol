@@ -3,7 +3,7 @@ pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
-import "../interfaces/shop.sol";
+import "shop.sol";
 
 contract shopList is ShopInter, HasConstructorWithPubKey{
     

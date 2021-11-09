@@ -3,14 +3,14 @@ pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
-import "../libraries/Debot.sol";
-import "../libraries/Terminal.sol";
-import "../libraries/Menu.sol";
-import "../libraries/AddressInput.sol";
-import "../libraries/ConfirmInput.sol";
-import "../libraries/Upgradable.sol";
-import "../libraries/Sdk.sol";
-import "../interfaces/shop.sol";
+import "../base/Debot.sol";
+import "../base/Terminal.sol";
+import "../base/Menu.sol";
+import "../base/AddressInput.sol";
+import "../base/ConfirmInput.sol";
+import "../base/Upgradable.sol";
+import "../base/Sdk.sol";
+import "shop.sol";
 
 abstract contract initializationDebot is Debot, Upgradable {
 

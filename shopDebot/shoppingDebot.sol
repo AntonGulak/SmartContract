@@ -4,7 +4,7 @@ pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
 
-import "../../abstractClasses/initializationDebot.sol";
+import "initializationDebot.sol";
 
 contract shopping is initializationDebot {
 
