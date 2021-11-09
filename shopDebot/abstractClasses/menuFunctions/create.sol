@@ -1,6 +1,7 @@
+pragma ton-solidity >=0.35.0;
+pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
-
 
 import "../../libraries/Debot.sol";
 import "../../libraries/Terminal.sol";
@@ -15,27 +16,30 @@ import "../../interfaces/shop.sol";
 import "../initializationDebot.sol";
 
 
-abstract contract create {
-    
-    ShopInter.Purchase internal inputPur;
-    address m_msigAddress;
 
-    function createPurchase(uint32 index) public {
-        index = index;
-        Terminal.input(tvm.functionId(getAmountPurchase), "Enter product name:", false);
-    }
+abstract contract create  {
+    
+    ShopInter.Purchase inputCreatePurchase;
+    address destCreatePurchase;
+
+    
+    function createPurchase_(address inp) public{
+        destCreatePurchase = inp;
+        
+        Terminal.input(tvm.functionId(getAmountPurchase), "Enter product name:", false);}
 
     function getAmountPurchase(string value) public {
-        inputPur.title = value;
-        Terminal.input(tvm.functionId(createPurchase_), "Enter amount:", false);
+        inputCreatePurchase.title = value;
+        Terminal.input(tvm.functionId(createPurchase__), "Enter amount:", false);
     }
 
-    function createPurchase_(string value) public {
+    function createPurchase__(string value) public {
         (uint256 amount, ) = stoi(value);
-        inputPur.amount = uint32(amount);
+        inputCreatePurchase.amount = uint32(amount);
 
         optional(uint256) pubkey = 0;
-        ShopInter(m_msigAddress).createPurchase{
+
+        ShopInter(destCreatePurchase).createPurchase{
                 abiVer: 2,
                 extMsg: true,
                 sign: true,
@@ -45,6 +49,6 @@ abstract contract create {
                 callbackId: tvm.functionId(initializationDebot.onSuccess),
                 onErrorId: tvm.functionId(initializationDebot.onError)
      
-            }(inputPur.title, inputPur.amount);
+            }(inputCreatePurchase.title, inputCreatePurchase.amount);
     }
 }

@@ -10,7 +10,9 @@ import "../libraries/AddressInput.sol";
 import "../libraries/ConfirmInput.sol";
 import "../libraries/Upgradable.sol";
 import "../libraries/Sdk.sol";
+
 import "../interfaces/shop.sol";
+
 
 abstract contract initializationDebot is Debot, Upgradable {
 
@@ -19,12 +21,18 @@ abstract contract initializationDebot is Debot, Upgradable {
     TvmCell m_todoCode;
     TvmCell m_todoStateInit;
     TvmCell m_todoData;
-    address m_address;  
+    address  m_address;  
     ShopInter.Stat m_stat;
     uint256 m_masterPubKey;
     address m_msigAddress;
     uint32 INITIAL_BALANCE =  200000000;  
-    ShopInter.Purchase internal inputPur; 
+
+    function getAdd() public view returns (address getAd) {
+        getAd =  m_address;
+    }
+
+
+ 
 
     function statToString() public view returns (string) {
         return format(

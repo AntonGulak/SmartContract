@@ -3,25 +3,9 @@
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
-			"name": "createPurchases",
+			"name": "createPurchase",
 			"inputs": [
 				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getAmountPurchase",
-			"inputs": [
-				{"name":"value","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "createPurchase_",
-			"inputs": [
-				{"name":"value","type":"bytes"}
 			],
 			"outputs": [
 			]
@@ -30,30 +14,6 @@
 			"name": "toBuy",
 			"inputs": [
 				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "toBuyGetFlag",
-			"inputs": [
-				{"name":"value","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "toBuyGetCost",
-			"inputs": [
-				{"name":"value","type":"bool"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "updatePurchase__",
-			"inputs": [
-				{"name":"value","type":"bytes"}
 			],
 			"outputs": [
 			]
@@ -84,6 +44,60 @@
 		},
 		{
 			"name": "deletePurchase_",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "toBuy_",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "toBuyGetFlag",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "toBuyGetCost",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "updatePurchase__",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createPurchase_",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getAmountPurchase",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createPurchase__",
 			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
@@ -253,6 +267,14 @@
 			"inputs": [
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "m_address",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"m_address","type":"address"}
 			]
 		}
 	],
