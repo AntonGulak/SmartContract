@@ -99,14 +99,6 @@
 			]
 		},
 		{
-			"name": "mAddress",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"address"}
-			]
-		},
-		{
 			"name": "statToString",
 			"inputs": [
 			],

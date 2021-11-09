@@ -13,6 +13,8 @@ import "../libraries/Sdk.sol";
 
 import "../interfaces/shop.sol";
 
+import "../userLibraries/date.sol";
+
 
 abstract contract initializationDebot is Debot, Upgradable {
 
@@ -226,6 +228,7 @@ abstract contract initializationDebot is Debot, Upgradable {
             }();
         }
 
+
     function getPurchases_ (ShopInter.Purchase[] purchases) public {
 
         uint32 i;
@@ -240,7 +243,7 @@ abstract contract initializationDebot is Debot, Upgradable {
             } else {
                 completed = ' ';
             }
-            Terminal.print(0, format("id: {} | {}  \"{}\"  at {}, amount: {}, the total cost:  {}", purchas.id, completed, purchas.title, purchas.createdAt, purchas.amount, purchas.cost));
+            Terminal.print(0, format("id: {} | {}  \"{}\"  at {}, amount: {}, the total cost:  {}", purchas.id, completed, purchas.title, date.toString(uint(purchas.createdAt)), purchas.amount, purchas.cost));
         }
       
         _menu();

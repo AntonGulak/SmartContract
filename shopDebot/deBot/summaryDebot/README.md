@@ -9,7 +9,7 @@ tonos-cli genaddr summaryDebot.tvc summaryDebot.abi.json --genkey summaryDebot.k
 Заполнить файл params.json
 В моем случае:
 {
-    "dest": "0:ce8db1a39a9c57a8695bf5670a8c7b809bd7c9264bf570c680c122519655894d",
+    "dest": "0:f6841ed955e18e72d0caec438ba3a1fe589e9b52a7721f351062630b85af0734",
     "amount": 10000000000
 }
 Закинуть денег
@@ -25,13 +25,13 @@ exit
     "dabi": "7b0d0a0........d0a7d0d0a"
 }
 Установить dabi
-tonos-cli --url http://127.0.0.1 call 0:ce8db1a39a9c57a8695bf5670a8c7b809bd7c9264bf570c680c122519655894d setABI dabi.json --sign summaryDebot.keys.json --abi summaryDebot.abi.json
+tonos-cli --url http://127.0.0.1 call 0:f6841ed955e18e72d0caec438ba3a1fe589e9b52a7721f351062630b85af0734 setABI dabi.json --sign summaryDebot.keys.json --abi summaryDebot.abi.json
 !!!!!!!!!
 вызвать
-tonos-cli --url http://127.0.0.1 run --abi summaryDebot.abi.json 0:ce8db1a39a9c57a8695bf5670a8c7b809bd7c9264bf570c680c122519655894d getDebotInfo "{}"
+tonos-cli --url http://127.0.0.1 run --abi summaryDebot.abi.json 0:f6841ed955e18e72d0caec438ba3a1fe589e9b52a7721f351062630b85af0734 getDebotInfo "{}"
 предварительно сформировать shopList.decode.json
-tonos-cli --url http://127.0.0.1 call --abi summaryDebot.abi.json --sign summaryDebot.keys.json 0:ce8db1a39a9c57a8695bf5670a8c7b809bd7c9264bf570c680c122519655894d setTodoCode shopList.decode.json
+tonos-cli --url http://127.0.0.1 call --abi summaryDebot.abi.json --sign summaryDebot.keys.json 0:f6841ed955e18e72d0caec438ba3a1fe589e9b52a7721f351062630b85af0734 setTodoCode shopList.decode.json
 Вызываем дебота
-tonos-cli --url http://127.0.0.1 debot fetch 0:ce8db1a39a9c57a8695bf5670a8c7b809bd7c9264bf570c680c122519655894d
+tonos-cli --url http://127.0.0.1 debot fetch 0:f6841ed955e18e72d0caec438ba3a1fe589e9b52a7721f351062630b85af0734
 Ошибка, которую можно получить, если не перейти на иную работу со stateInit как в лекции:
 Debot error: Contract execution was terminated with error: Unknown error, exit code: 55 (Bad StateInit cell for tvm_insert_pubkey. Data was not found.)
