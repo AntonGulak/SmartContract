@@ -243,7 +243,7 @@ abstract contract initializationDebot is Debot, Upgradable {
             } else {
                 completed = ' ';
             }
-            Terminal.print(0, format("id: {} | {}  \"{}\"  at {}, amount: {}, the total cost:  {}", purchas.id, completed, purchas.title, date.toString(uint(purchas.createdAt)), purchas.amount, purchas.cost));
+            Terminal.print(0, format("id: {} | {}  \"{}\"  created at {}, amount: {}, the total cost:  {}", purchas.id, completed, purchas.title, date.toString(uint(purchas.createdAt)), purchas.amount, purchas.cost));
         }
       
         _menu();
