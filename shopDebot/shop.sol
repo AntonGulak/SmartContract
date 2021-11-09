@@ -33,7 +33,7 @@ interface ShopInter {
     }
     
     function createPurchase(string title, uint32 amount)  external ;
-    function updatePurchase(uint32 id, bool _isSoldOut, uint32 _cost) external;
+    function updatePurchase(uint32 id, bool _isSoldOut, uint _cost) external;
     function deletePurchase(uint32 id) external;
     function getPurchases() external view returns (Purchase[] purchases);
     function getStat() external view returns (Stat stat);

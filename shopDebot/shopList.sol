@@ -24,13 +24,13 @@ contract shopList is ShopInter, HasConstructorWithPubKey{
         m_ownerPubkey = pubkey;
     }
 
-    function createPurchase(string title, uint32 amount) public override {
+    function createPurchase(string title, uint32 amount) public onlyOwner override {
         tvm.accept();
 
         m_purchases[m_count++] = Purchase(m_count, title, amount, now, false, 0);
     }
 
-    function updatePurchase(uint32 id, bool _isSoldOut, uint32 _cost) public onlyOwner override {
+    function updatePurchase(uint32 id, bool _isSoldOut, uint _cost) public onlyOwner override {
         optional(Purchase) purchase = m_purchases.fetch(id);
         require(purchase.hasValue(), 102);
         tvm.accept();

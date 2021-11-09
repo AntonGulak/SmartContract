@@ -21,10 +21,10 @@ abstract contract initializationDebot is Debot, Upgradable {
     TvmCell m_todoData;
     address m_address;  
     ShopInter.Stat m_stat;
-    uint32 m_taskId;
     uint256 m_masterPubKey;
     address m_msigAddress;
-    uint32 INITIAL_BALANCE =  200000000;   
+    uint32 INITIAL_BALANCE =  200000000;  
+    ShopInter.Purchase internal inputPur; 
 
     function statToString() public view returns (string) {
         return format(

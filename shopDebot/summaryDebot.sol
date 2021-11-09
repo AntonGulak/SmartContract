@@ -6,8 +6,7 @@ pragma AbiHeader pubkey;
 
 import "initializationDebot.sol";
 
-contract fillShipLIstDebot is initializationDebot {
-
+contract summaryDebot is initializationDebot {
 
     function _menu()  internal override {
         string sep = '----------------------------------------';
@@ -15,14 +14,16 @@ contract fillShipLIstDebot is initializationDebot {
          sep, 
          [
             MenuItem("Add new product", "", tvm.functionId(createPurchases)),
+            MenuItem("Update purchase status ", "", tvm.functionId(toBuy)),
             MenuItem("Show shopList", "", tvm.functionId(getPurchases)),
             MenuItem("Delete product", "", tvm.functionId(deletePurchase))
 
         ]);
         
     } //end menu
+    
 
-    function createPurchases(uint32 index) public {
+     function createPurchases(uint32 index) public {
         index = index;
         Terminal.input(tvm.functionId(getAmountPurchase), "Enter product name:", false);
     }
@@ -48,7 +49,47 @@ contract fillShipLIstDebot is initializationDebot {
                 onErrorId: tvm.functionId(onError)
      
             }(inputPur.title, inputPur.amount);
+    }   
+
+    function toBuy(uint32 index) public {
+        index = index;
+        if (m_stat.completeCount + m_stat.incompleteCount > 0) {
+            Terminal.input(tvm.functionId(toBuyGetFlag), "Enter product number:", false);
+        } else {
+            Terminal.print(0, "Sorry, you have product to update");
+            _menu();
+        }
     }
+
+    function toBuyGetFlag(string value) public {
+        (uint256 num,) = stoi(value);
+        inputPur.id = uint32(num);
+        ConfirmInput.get(tvm.functionId(toBuyGetCost),"Is this purchase completed?");
+    }
+
+    function toBuyGetCost(bool value) public {
+        inputPur.isSoldOut = value;
+ 
+        Terminal.input(tvm.functionId(updatePurchase__), "Enter total purchase price:", false);
+    } 
+    
+
+      function updatePurchase__(string value) public {
+        optional(uint256) pubkey = 0;
+        (uint256 num,) = stoi(value);
+        inputPur.cost = uint(num);
+
+        ShopInter(m_address).updatePurchase{
+                abiVer: 2,
+                extMsg: true,
+                sign: true,
+                pubkey: pubkey,
+                time: uint64(now),
+                expire: 0,
+                callbackId: tvm.functionId(onSuccess),
+                onErrorId: tvm.functionId(onError)
+            }(inputPur.id, inputPur.isSoldOut, inputPur.cost);
+    }  
     
      function getPurchases(uint32 index) public view {
         index = index;
