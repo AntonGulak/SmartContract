@@ -26,14 +26,7 @@ abstract contract initializationDebot is Debot, Upgradable {
     uint256 m_masterPubKey;
     address m_msigAddress;
     uint32 INITIAL_BALANCE =  200000000;  
-
-    function mAddress() public view returns (address) {
-        return m_address;
-    }
-
-
  
-
     function statToString() public view returns (string) {
         return format(
                 "You have {}/{}/{} (todo/done/total) purchases  for a total of {}",

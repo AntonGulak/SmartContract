@@ -27,7 +27,8 @@ contract summaryDebot is initializationDebot, create, toBuy, del {
             MenuItem("Delete product", "", tvm.functionId(deletePurchase))
         ]);
         } else {
-              Terminal.input(0, "Enter address contract, where you save shopList:", false);
+              //Terminal.input(0, "Enter address contract, where you save shopList:", false);
+              Terminal.print(0, "Please, firstly, you should use the fillShipDebot!");
         }
 
         
