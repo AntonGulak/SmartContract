@@ -99,32 +99,6 @@
 			]
 		},
 		{
-			"name": "statToString",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"bytes"}
-			]
-		},
-		{
-			"name": "getDebotInfo",
-			"id": "0xDEB",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"name","type":"bytes"},
-				{"name":"version","type":"bytes"},
-				{"name":"publisher","type":"bytes"},
-				{"name":"key","type":"bytes"},
-				{"name":"author","type":"bytes"},
-				{"name":"support","type":"address"},
-				{"name":"hello","type":"bytes"},
-				{"name":"language","type":"bytes"},
-				{"name":"dabi","type":"bytes"},
-				{"name":"icon","type":"bytes"}
-			]
-		},
-		{
 			"name": "getRequiredInterfaces",
 			"inputs": [
 			],
@@ -156,16 +130,16 @@
 			]
 		},
 		{
-			"name": "setStat",
+			"name": "onSuccess",
 			"inputs": [
-				{"components":[{"name":"completeCount","type":"uint32"},{"name":"incompleteCount","type":"uint32"},{"name":"amountPrice","type":"uint256"}],"name":"stat","type":"tuple"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "onSuccess",
+			"name": "onErrorExternal",
 			"inputs": [
+				{"name":"temp","type":"bytes"}
 			],
 			"outputs": [
 			]
@@ -246,11 +220,45 @@
 			]
 		},
 		{
+			"name": "statToString",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"bytes"}
+			]
+		},
+		{
+			"name": "setStat",
+			"inputs": [
+				{"components":[{"name":"completeCount","type":"uint32"},{"name":"incompleteCount","type":"uint32"},{"name":"amountPrice","type":"uint256"}],"name":"stat","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "upgrade",
 			"inputs": [
 				{"name":"state","type":"cell"}
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "getDebotInfo",
+			"id": "0xDEB",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"version","type":"bytes"},
+				{"name":"publisher","type":"bytes"},
+				{"name":"key","type":"bytes"},
+				{"name":"author","type":"bytes"},
+				{"name":"support","type":"address"},
+				{"name":"hello","type":"bytes"},
+				{"name":"language","type":"bytes"},
+				{"name":"dabi","type":"bytes"},
+				{"name":"icon","type":"bytes"}
 			]
 		},
 		{

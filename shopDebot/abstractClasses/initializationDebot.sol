@@ -3,7 +3,6 @@ pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 
-import "../libraries/Debot.sol";
 import "../libraries/Terminal.sol";
 import "../libraries/Menu.sol";
 import "../libraries/AddressInput.sol";
@@ -15,10 +14,12 @@ import "../interfaces/shop.sol";
 
 import "../userLibraries/date.sol";
 
+import "debotinfo.sol";
 
-abstract contract initializationDebot is Debot, Upgradable {
+// Abstract class for initializing an account and for call menu, in addition one function for menu,
+// because in other location, it will eat "gase"
 
-    bytes m_icon;
+abstract contract initializationDebot is debotinfo, Upgradable {
 
     TvmCell m_todoCode;
     TvmCell m_todoStateInit;
@@ -28,33 +29,9 @@ abstract contract initializationDebot is Debot, Upgradable {
     uint256 m_masterPubKey;
     address m_msigAddress;
     uint32 INITIAL_BALANCE =  200000000;  
- 
-    function statToString() public view returns (string) {
-        return format(
-                "You have {}/{}/{} (not done/done/total) purchases  for a total of {}",
-                    m_stat.incompleteCount,
-                    m_stat.completeCount,
-                    m_stat.completeCount + m_stat.incompleteCount,
-                    m_stat.amountPrice
-            );
-    }
 
-    function getDebotInfo() public functionID(0xDEB) override view returns(
-        string name, string version, string publisher, string key, string author,
-        address support, string hello, string language, string dabi, bytes icon
-    ) {
-        name = "ShopList DeBot";
-        version = "0.2.0";
-        publisher = "";
-        key = "Shop list manager";
-        author = "Anton Gulak";
-        support = address.makeAddrStd(0, 0x59f2168905be6fbe0295e1b7fda59ab786006c8f25e23373e82b4210016f9e47);
-        hello = "Hi, i'm a ShopList DeBot.";
-        language = "en";
-        dabi = m_debotAbi.get();
-        icon = m_icon;
-    }
-    
+    function _menu() virtual internal;
+
     function onCodeUpgrade() internal override {
         tvm.resetStorage();
     }    
@@ -63,9 +40,7 @@ abstract contract initializationDebot is Debot, Upgradable {
         return [ Terminal.ID, Menu.ID, AddressInput.ID, ConfirmInput.ID ];
     }
 
-
-
-
+    // Start point
     function start() public override {
         Terminal.input(tvm.functionId(savePublicKey),"Please enter your public key",false);
     }
@@ -106,28 +81,6 @@ abstract contract initializationDebot is Debot, Upgradable {
         }
     } 
 
-    function _getStat(uint32 answerId) internal view {
-        optional(uint256) none;
-        ShopInter(m_address).getStat{
-            abiVer: 2,
-            extMsg: true,
-            sign: false,
-            pubkey: none,
-            time: uint64(now),
-            expire: 0,
-            callbackId: answerId,
-            onErrorId: 0
-        }();
-    }
-
-    function setStat(ShopInter.Stat stat) public {
-        m_stat = stat;
-        _menu();
-    }
-
-
-    function _menu() virtual internal;
-    
     function deploy() internal view {
             TvmCell image = tvm.insertPubkey(m_todoStateInit, m_masterPubKey);
             optional(uint256) none;
@@ -149,6 +102,11 @@ abstract contract initializationDebot is Debot, Upgradable {
     function onSuccess() public view {
         _getStat(tvm.functionId(setStat));
     }
+
+    // //if you need call menu from external contract using terminal.input
+    // function onErrorExternal(string temp) virtual public view {
+    //     _getStat(tvm.functionId(setStat));
+    // }
 
     function onErrorRepeatDeploy(uint32 sdkError, uint32 exitCode) public view {
         // TODO: check errors if needed.
@@ -181,19 +139,19 @@ abstract contract initializationDebot is Debot, Upgradable {
         if (acc_type ==  0) {
             deploy();
         } else {
+            //Until deploy 
             waitBeforeDeploy();
         }
     }          
 
      function onErrorRepeatCredit(uint32 sdkError, uint32 exitCode) public {
-        // TODO: check errors if needed.
+        // check errors if needed.
         sdkError;
         exitCode;
         creditAccount(m_msigAddress);
     }    
     
-          
-
+    //to load smart contracts
     function setShopList(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
@@ -208,8 +166,9 @@ abstract contract initializationDebot is Debot, Upgradable {
         _menu();
     }
 
-
-    //Не получится вынести отдельным классом, иначе придется платить за запись в переменную значения адреса 
+//Function for menu
+//____________________________________________________________________________________________________
+    // It here, otherwise you have to pay for rewrite address value
     function getPurchases(uint32 index) view public {
 
             index = index;
@@ -227,7 +186,6 @@ abstract contract initializationDebot is Debot, Upgradable {
                 onErrorId: 0
             }();
         }
-
 
     function getPurchases_ (ShopInter.Purchase[] purchases) public {
 
@@ -249,6 +207,41 @@ abstract contract initializationDebot is Debot, Upgradable {
         _menu();
     }
 
+//____________________________________________________________________________________________________
+//End block with function for menu
+
+ // start statistics block
+ //____________________________________________________________________________________________________
+    function statToString() public view returns (string) {
+        return format(
+                "You have {}/{}/{} (not done/done/total) purchases  for a total of {}",
+                    m_stat.incompleteCount,
+                    m_stat.completeCount,
+                    m_stat.completeCount + m_stat.incompleteCount,
+                    m_stat.amountPrice
+            );
+    }
+
+    function _getStat(uint32 answerId) internal view {
+        optional(uint256) none;
+        ShopInter(m_address).getStat{
+            abiVer: 2,
+            extMsg: true,
+            sign: false,
+            pubkey: none,
+            time: uint64(now),
+            expire: 0,
+            callbackId: answerId,
+            onErrorId: 0
+        }();
+    }
+
+    function setStat(ShopInter.Stat stat) public {
+        m_stat = stat;
+        _menu();
+    }
+//____________________________________________________________________________________________________
+//end statistics block
 
 
 }

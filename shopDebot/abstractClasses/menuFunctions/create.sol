@@ -39,12 +39,10 @@ abstract contract create  {
         inputCreatePurchase.amount = uint32(amount);
         optional(uint256) pubkey = 0;
 
-        if (!flag) {
+        if (!flag || inputCreatePurchase.amount == 0) {
             Terminal.input(tvm.functionId(createPurchase__), "Please, enter the correct amount:", false);
             
-        } else 
-
-       { 
+        } else  { 
             ShopInter(destCreatePurchase).createPurchase{
                     abiVer: 2,
                     extMsg: true,

@@ -39,8 +39,8 @@ abstract contract toBuy  {
     function toBuyGetCost(bool value) public {
         inputToBuy.isSoldOut = value;
 
-        // if (!inputToBuy.isSoldOut) {
-        //     Terminal.print(tvm.functionId(initializationDebot.onError), "You didn't buy this product, you can't enter the price");
+        //  if (!inputToBuy.isSoldOut) {
+        //      Terminal.input(tvm.functionId(initializationDebot.onErrorExternal), "You didn't buy this product, you can't enter the price. Enter any letter, if you got it", false);
         // }
                
         Terminal.input(tvm.functionId(updatePurchase__), "Enter total purchase price:", false);
