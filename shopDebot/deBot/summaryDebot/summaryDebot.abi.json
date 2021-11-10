@@ -137,14 +137,6 @@
 			]
 		},
 		{
-			"name": "onErrorExternal",
-			"inputs": [
-				{"name":"temp","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "onErrorRepeatDeploy",
 			"inputs": [
 				{"name":"sdkError","type":"uint32"},
