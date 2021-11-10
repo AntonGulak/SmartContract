@@ -195,7 +195,7 @@
 			]
 		},
 		{
-			"name": "checkIfStatusIs0",
+			"name": "checkStatusDeploy",
 			"inputs": [
 				{"name":"acc_type","type":"int8"}
 			],
@@ -212,7 +212,7 @@
 			]
 		},
 		{
-			"name": "setTodoCode",
+			"name": "setShopList",
 			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}

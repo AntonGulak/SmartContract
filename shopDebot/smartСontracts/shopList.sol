@@ -31,15 +31,17 @@ contract shopList is ShopInter, HasConstructorWithPubKey{
     }
 
     function updatePurchase(uint32 id, bool _isSoldOut, uint _cost) public onlyOwner override {
-        optional(Purchase) purchase = m_purchases.fetch(id);
-        require(purchase.hasValue(), 102);
         tvm.accept();
+        optional(Purchase) purchase = m_purchases.fetch(id);
+
+        require(purchase.hasValue(), 102);
 
         Purchase thisPurchase = purchase.get();
         thisPurchase.isSoldOut = _isSoldOut;
         thisPurchase.cost = _cost;
         m_purchases[id] = thisPurchase;
     }
+ 
 
     function deletePurchase(uint32 id) public onlyOwner override {
         require(m_purchases.exists(id), 102);

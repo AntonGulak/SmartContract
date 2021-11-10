@@ -34,21 +34,29 @@ abstract contract create  {
     }
 
     function createPurchase__(string value) public {
-        (uint256 amount, ) = stoi(value);
-        inputCreatePurchase.amount = uint32(amount);
+        (uint256 amount, bool flag) = stoi(value);
 
+        inputCreatePurchase.amount = uint32(amount);
         optional(uint256) pubkey = 0;
 
-        ShopInter(destCreatePurchase).createPurchase{
-                abiVer: 2,
-                extMsg: true,
-                sign: true,
-                pubkey: pubkey,
-                time: uint64(now),
-                expire: 0,
-                callbackId: tvm.functionId(initializationDebot.onSuccess),
-                onErrorId: tvm.functionId(initializationDebot.onError)
-     
-            }(inputCreatePurchase.title, inputCreatePurchase.amount);
-    }
-}
+        if (!flag) {
+            Terminal.input(tvm.functionId(createPurchase__), "Please, enter the correct amount:", false);
+            
+        } else 
+
+       { 
+            ShopInter(destCreatePurchase).createPurchase{
+                    abiVer: 2,
+                    extMsg: true,
+                    sign: true,
+                    pubkey: pubkey,
+                    time: uint64(now),
+                    expire: 0,
+                    callbackId: tvm.functionId(initializationDebot.onSuccess),
+                    onErrorId: tvm.functionId(initializationDebot.onError)
+            
+                }(inputCreatePurchase.title, inputCreatePurchase.amount);
+        } //end else
+    } //end createPurchase__
+    
+} //end contract

@@ -31,7 +31,7 @@ abstract contract initializationDebot is Debot, Upgradable {
  
     function statToString() public view returns (string) {
         return format(
-                "You have {}/{}/{} (todo/done/total) purchases  for a total of {}",
+                "You have {}/{}/{} (not done/done/total) purchases  for a total of {}",
                     m_stat.incompleteCount,
                     m_stat.completeCount,
                     m_stat.completeCount + m_stat.incompleteCount,
@@ -174,10 +174,10 @@ abstract contract initializationDebot is Debot, Upgradable {
     }
 
     function waitBeforeDeploy() public  {
-        Sdk.getAccountType(tvm.functionId(checkIfStatusIs0), m_address);
+        Sdk.getAccountType(tvm.functionId(checkStatusDeploy), m_address);
     }
 
-    function checkIfStatusIs0(int8 acc_type) public {
+    function checkStatusDeploy(int8 acc_type) public {
         if (acc_type ==  0) {
             deploy();
         } else {
@@ -194,7 +194,7 @@ abstract contract initializationDebot is Debot, Upgradable {
     
           
 
-    function setTodoCode(TvmCell code, TvmCell data) public {
+    function setShopList(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
         m_todoCode = code;

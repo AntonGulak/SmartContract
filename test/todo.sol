@@ -2,20 +2,25 @@ pragma ton-solidity >= 0.35.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-import "get.sol";
-import "new.sol";
-
-contract Todo is get, bew {
 
 
-    constructor() public {
-        require(pubkey != 0, 120);
+contract Todo {
+     string public value;
+     uint256 public amount;
+     bool public flag;
+
+
+    function setValue() public {
         tvm.accept();
-        
-        
-    }
+         value = "123";
+         }
+         
 
-  
+
+    function getStat() public  {
+        tvm.accept();
+        (amount, flag ) = stoi(value);
+    }
 
 }
 

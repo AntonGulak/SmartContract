@@ -30,7 +30,7 @@ tonos-cli --url http://127.0.0.1 call 0:8015d4b0fa47c67ea0219fbe87846e837713d35d
 вызвать
 tonos-cli --url http://127.0.0.1 run --abi fillShipListDebot.abi.json 0:8015d4b0fa47c67ea0219fbe87846e837713d35de8579d8256b6c009c2b06fcf getDebotInfo "{}"
 предварительно сформировать shopList.decode.json
-tonos-cli --url http://127.0.0.1 call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:8015d4b0fa47c67ea0219fbe87846e837713d35de8579d8256b6c009c2b06fcf setTodoCode shopList.decode.json
+tonos-cli --url http://127.0.0.1 call --abi fillShipListDebot.abi.json --sign fillShipListDebot.keys.json 0:8015d4b0fa47c67ea0219fbe87846e837713d35de8579d8256b6c009c2b06fcf setShopList shopList.decode.json
 Вызываем дебота
 tonos-cli --url http://127.0.0.1 debot fetch 0:8015d4b0fa47c67ea0219fbe87846e837713d35de8579d8256b6c009c2b06fcf
 Ошибка, которую можно получить, если не перейти на иную работу со stateInit как в лекции:
