@@ -5,15 +5,12 @@ pragma AbiHeader pubkey;
 
 
 import "../../abstractClasses/initializationDebot.sol";
-
-import "../../abstractClasses/menuFunctions/create.sol";
-import "../../abstractClasses/menuFunctions/toBuy.sol";
-import "../../abstractClasses/menuFunctions/del.sol";
+import "../../abstractClasses/functionsMenu.sol";
 
 
 
 
-contract summaryDebot is initializationDebot, create, toBuy, del {
+contract summaryDebot is functionsMenu {
 
     function _menu()  internal override {
         string sep = '----------------------------------------';
@@ -34,17 +31,5 @@ contract summaryDebot is initializationDebot, create, toBuy, del {
         
     } //end menu
 
-
-    function toBuy(uint32 index)  public  {
-        index = index;
-
-        toBuy_(m_address);
-    }
-    
-    function deletePurchase(uint32 index)  public  {
-        index = index;
-
-        deletePurchase_(m_address);
-    }
          
 } //end contract
