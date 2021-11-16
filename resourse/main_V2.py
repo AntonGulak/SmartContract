@@ -13,6 +13,7 @@ if __name__ == '__main__':
     distributionResources = [0] * len(resources)
 
     #Метод Д'Ондта
+    #https://en.wikipedia.org/wiki/D%27Hondt_method
     for i in range(capabilityArmy):
         max = - 1
         index = -1
