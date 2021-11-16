@@ -14,6 +14,7 @@ def getFraction(number)  -> float:
     return number - int(number)
 
 
+#Сортировка неэффективная, но если что-нибудь впихнуть с n*logn, то заметно прибавим на больших данных
 def bubble_sort(_resources):
     # Устанавливаем swapped в True, чтобы цикл запустился хотя бы один раз
     swapped = True
@@ -27,6 +28,7 @@ def bubble_sort(_resources):
                 swapped = True
 
 
+#FAIL: [3, 3, 3, 3, 3, 3, 18] --> [2,2,2,2,1,1,10]
 if __name__ == '__main__':
 
     resources = []
@@ -54,10 +56,6 @@ if __name__ == '__main__':
     #Нераспределенные ресурсы
     balance = capabilityArmy - intSum
 
-    #Если распределять нечего - выводим список и выходим
-    if balance == 0:
-        # blablabla
-        exit()
 
     #Сортируем массив по убыванию дробных частей
     #Оставшиеся места будет определять по дробной части
