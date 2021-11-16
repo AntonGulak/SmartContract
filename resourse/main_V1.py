@@ -1,6 +1,3 @@
-
-
-
 def getCoef(_capabilityArmy, _resources) -> float:
     sum = 0
 
@@ -53,7 +50,7 @@ if __name__ == '__main__':
     for x in range(len(resources)):
         intSum += int(resources[x])
 
-    #Нераспределенные ресурсы
+    # Нераспределенная грузоподъемность
     balance = capabilityArmy - intSum
 
 
