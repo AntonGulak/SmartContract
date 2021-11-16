@@ -30,6 +30,8 @@ if __name__ == '__main__':
 
     resources = []
     resources = [int(i) for i in input('Enter the values of resources ').split()]
+    resources.sort()
+    print(resources)
 
     capabilityArmy = int(input('Enter the carrying capacity of the army '))
 
