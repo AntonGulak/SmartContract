@@ -8,6 +8,9 @@ if __name__ == '__main__':
 
     capabilityArmy = int(input('Enter the carrying capacity of the army '))
 
+    if sum(resources) > capabilityArmy:
+        capabilityArmy = sum(resources)
+
 
     #Пустой массив под распределение ресурсов
     distributionResources = [0] * len(resources)

@@ -33,6 +33,9 @@ if __name__ == '__main__':
 
     capabilityArmy = int(input('Enter the carrying capacity of the army '))
 
+    if sum(resources) > capabilityArmy:
+        capabilityArmy = sum(resources)
+
 
     #Получаем  коэффициент распределения
     coef = getCoef(capabilityArmy, resources)
