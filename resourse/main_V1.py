@@ -28,7 +28,7 @@ def bubble_sort(_resources):
                 swapped = True
 
 
-#FAIL: [3, 3, 3, 3, 3, 3, 18] --> [2,2,2,2,1,1,10]
+#FAIL: [3, 3, 3, 3, 3, 3, 7], 5 --> [1, 1, 1, 1, 0, 0, 0, 1]
 if __name__ == '__main__':
 
     resources = []
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     for x in range(len(resources)):
         resources[x] = round(resources[x] * coef, 5)
 
-    print(resources)
+    #print(resources)
 
 
     # Аккумулятор для целых частей
