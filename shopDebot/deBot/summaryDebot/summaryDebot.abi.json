@@ -11,31 +11,7 @@
 			]
 		},
 		{
-			"name": "toBuy",
-			"inputs": [
-				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "deletePurchase",
-			"inputs": [
-				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "deletePurchase_",
-			"inputs": [
-				{"name":"inp","type":"address"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "deletePurchase__",
+			"name": "getAmountPurchase",
 			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
@@ -43,9 +19,17 @@
 			]
 		},
 		{
-			"name": "toBuy_",
+			"name": "createPurchase_",
 			"inputs": [
-				{"name":"inp","type":"address"}
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "toBuy",
+			"inputs": [
+				{"name":"index","type":"uint32"}
 			],
 			"outputs": [
 			]
@@ -67,7 +51,7 @@
 			]
 		},
 		{
-			"name": "updatePurchase__",
+			"name": "updatePurchase_",
 			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
@@ -75,15 +59,15 @@
 			]
 		},
 		{
-			"name": "createPurchase_",
+			"name": "deletePurchase",
 			"inputs": [
-				{"name":"inp","type":"address"}
+				{"name":"index","type":"uint32"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "getAmountPurchase",
+			"name": "deletePurchase_",
 			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
@@ -91,9 +75,17 @@
 			]
 		},
 		{
-			"name": "createPurchase__",
+			"name": "getPurchases",
 			"inputs": [
-				{"name":"value","type":"bytes"}
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPurchases_",
+			"inputs": [
+				{"components":[{"name":"id","type":"uint32"},{"name":"title","type":"bytes"},{"name":"amount","type":"uint32"},{"name":"createdAt","type":"uint64"},{"name":"isSoldOut","type":"bool"},{"name":"cost","type":"uint256"}],"name":"purchases","type":"tuple[]"}
 			],
 			"outputs": [
 			]
@@ -132,6 +124,15 @@
 		{
 			"name": "onSuccess",
 			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
 			],
 			"outputs": [
 			]
@@ -182,31 +183,6 @@
 			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "onError",
-			"inputs": [
-				{"name":"sdkError","type":"uint32"},
-				{"name":"exitCode","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getPurchases",
-			"inputs": [
-				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getPurchases_",
-			"inputs": [
-				{"components":[{"name":"id","type":"uint32"},{"name":"title","type":"bytes"},{"name":"amount","type":"uint32"},{"name":"createdAt","type":"uint64"},{"name":"isSoldOut","type":"bool"},{"name":"cost","type":"uint256"}],"name":"purchases","type":"tuple[]"}
 			],
 			"outputs": [
 			]

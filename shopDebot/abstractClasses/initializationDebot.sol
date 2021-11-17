@@ -102,11 +102,13 @@ abstract contract initializationDebot is debotinfo, Upgradable {
     function onSuccess() public view {
         _getStat(tvm.functionId(setStat));
     }
+     
+     function onError(uint32 sdkError, uint32 exitCode) public {
+         Terminal.print(0, format("Operation failed. sdkError {}, exitCode {}", sdkError, exitCode));
+        _menu();
+    }
 
-    // //if you need call menu from external contract using terminal.input
-    // function onErrorExternal(string temp) virtual public view {
-    //     _getStat(tvm.functionId(setStat));
-    // }
+
 
     function onErrorRepeatDeploy(uint32 sdkError, uint32 exitCode) public view {
         // TODO: check errors if needed.
@@ -161,54 +163,7 @@ abstract contract initializationDebot is debotinfo, Upgradable {
         m_todoStateInit = tvm.buildStateInit(m_todoCode, m_todoData);
     }
     
-    function onError(uint32 sdkError, uint32 exitCode) public {
-        Terminal.print(0, format("Operation failed. sdkError {}, exitCode {}", sdkError, exitCode));
-        _menu();
-    }
 
-//Function for menu
-//____________________________________________________________________________________________________
-    // It here, otherwise you have to pay for rewrite address value
-    function getPurchases(uint32 index) view public {
-
-            index = index;
-            
-            optional(uint256) none;
-
-            ShopInter(m_address).getPurchases{
-                abiVer: 2,
-                extMsg: true,
-                sign: false,
-                pubkey: none,
-                time: uint64(now),
-                expire: 0,
-                callbackId: tvm.functionId(getPurchases_),
-                onErrorId: 0
-            }();
-        }
-
-    function getPurchases_ (ShopInter.Purchase[] purchases) public {
-
-        uint32 i;
-      
-        Terminal.print(0, "Your shopList:");
-        for (i = 0; i < purchases.length; i++) {
-            ShopInter.Purchase purchas = purchases[i];
-            string completed;
-
-            if (purchas.isSoldOut) {
-                completed = '✓';
-            } else {
-                completed = ' ';
-            }
-            Terminal.print(0, format("id: {} | {}  \"{}\"  created at {}, amount: {}, the total cost:  {}", purchas.id, completed, purchas.title, date.toString(uint(purchas.createdAt)), purchas.amount, purchas.cost));
-        }
-      
-        _menu();
-    }
-
-//____________________________________________________________________________________________________
-//End block with function for menu
 
  // start statistics block
  //____________________________________________________________________________________________________
