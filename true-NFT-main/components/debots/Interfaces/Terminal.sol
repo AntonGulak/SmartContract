@@ -6,6 +6,7 @@ interface ITerminal {
 	function input(uint32 answerId, string prompt, bool multiline) external returns (string value);
 	function print(uint32 answerId, string message) external;
 	function printf(uint32 answerId, string fmt, TvmCell fargs) external;
+	//function inputUint(uint32 answerId, string prompt) external returns (uint256 value);
 }
 
 library Terminal {
@@ -17,7 +18,6 @@ library Terminal {
 		address addr = address.makeAddrStd(DEBOT_WC, ID);
 		ITerminal(addr).input(answerId, prompt, multiline);
 	}
-	
 	function print(uint32 answerId, string message) public pure {
 		address addr = address.makeAddrStd(DEBOT_WC, ID);
 		ITerminal(addr).print(answerId, message);
@@ -26,5 +26,9 @@ library Terminal {
 		address addr = address.makeAddrStd(DEBOT_WC, ID);
 		ITerminal(addr).printf(answerId, fmt, fargs);
 	}
+	/*function inputUint(uint32 answerId, string prompt) public pure {
+		address addr = address.makeAddrStd(DEBOT_WC, ID);
+		ITerminal(addr).inputUint(answerId, prompt);
+	}*/
 
 }
