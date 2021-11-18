@@ -81,8 +81,8 @@ async function main(client) {
         dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
     };
 
-
-
-    console.log(dabi);
+    console.log(decode_tvc( {
+        tvc: tvc_string
+    }));
 
 }
