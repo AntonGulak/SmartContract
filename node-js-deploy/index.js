@@ -4,13 +4,13 @@ const { Account } = require("@tonclient/appkit");
 const { consoleTerminal, runCommand } = require("tondev");
 const path = require("path");
 const fs = require('fs');
+const crypto = require('crypto');
 
 
 
 // Application initialization
 
 TonClient.useBinaryLibrary(libNode)
-
 
 async function main(client) {
 }
@@ -28,14 +28,22 @@ async function main(client) {
 })();
 
 async function main(client) {
+    const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
+    
+    const hash = crypto.createHash('md5').update(solFile).digest('hex');
+
+    fs.appendFile(hash + ".sol", solFile, function (err) {
+        if (err) return console.log(err);
+        console.log('Create!');
+     });
 
     await runCommand(consoleTerminal, "sol compile", {
-        file: path.resolve(__dirname, "helloworld.sol")
+        file: path.resolve(__dirname, hash + ".sol")
     });
 
-    const tvc_string = await fs.readFileSync("helloworld.tvc", {encoding: 'base64'});
+    const tvc_string = await fs.readFileSync(hash + ".tvc", {encoding: 'base64'});
 
-    const abi = await JSON.parse(fs.readFileSync("helloworld.abi.json"));
+    const abi = await JSON.parse(fs.readFileSync(hash + ".abi.json"));
 
     const AccContract = {
         abi: abi,
