@@ -1,0 +1,10 @@
+{
+	"version": "0.1.5",
+	"applications": [
+		{
+			"name": "hello-wallet",
+			"description": "Simple NodeJs Application",
+			"path": "demo/hello-wallet"
+		}
+	]
+}

@@ -1,0 +1,23 @@
+{
+    "name": "multisig-example",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "preparation": "node preparation.js",
+        "deploy": "node deploy.js",
+        "error_produce": "node error_produce.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@tonclient/appkit": "^0",
+        "@tonclient/core": "^1",
+        "@tonclient/lib-node": "^1",
+        "utils": "file:../../utils"
+    },
+    "devDependencies": {
+        "@types/node": "^14.14.31"
+    }
+}
