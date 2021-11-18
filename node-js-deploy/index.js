@@ -61,7 +61,7 @@ async function main(client) {
     //Сформировываем связку ключей
     const keys = await client.crypto.generate_random_sign_keys();
 
-    //abi связки ключей
+    //json связки ключей
     const signer = await signerKeys(keys);
 
     //предварительно создаем контракт
