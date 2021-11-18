@@ -1,4 +1,4 @@
-const {TonClient} = require("@tonclient/core");
+const {TonClient, signerKeys} = require("@tonclient/core");
 const {libNode} = require("@tonclient/lib-node");
 const { Account } = require("@tonclient/appkit");
 const { consoleTerminal, runCommand } = require("tondev");
@@ -33,24 +33,30 @@ async function main(client) {
         file: path.resolve(__dirname, "helloworld.sol")
     });
 
-    const tvc_string = fs.readFileSync("helloworld.tvc", {encoding: 'base64'});
+    const tvc_string = await fs.readFileSync("helloworld.tvc", {encoding: 'base64'});
 
-       
-    var jsonFile = "helloworld.abi.json";
-    var abi= JSON.parse(fs.readFileSync(jsonFile));
-    
-    console.log(abi);
+    const abi = await JSON.parse(fs.readFileSync("helloworld.abi.json"));
 
     const AccContract = {
-        abi: { /* ABI declarations */ },
+        abi: abi,
         tvc: tvc_string,
     };
-    
+
+    //Сформировываем связку ключей
     const keys = await client.crypto.generate_random_sign_keys();
 
-    const signer = await keys.public;
+    //abi связки ключей
+    const signer = await signerKeys(keys);
 
-    //const acc = new Account(AccContract, { signer, client });
+    //предварительно создаем контракт
+    const acc = new Account(AccContract, { signer, client });
 
-    //console.log(`New account future address: ${await acc.getAddress()}`);
+    //получаем адресс будущего контракта
+    const address = await acc.getAddress();
+
+    console.log(`New account future address: ${address}`);
+
+    //Деплоим
+    await acc.deploy({ useGiver: true });
+    console.log(`Hello contract was deployed at address: ${address}`);
 }
