@@ -77,19 +77,27 @@ async function main(client) {
     console.log(`Hello contract was deployed at address: ${address}`);
 
 
+    //Получаем код dabi
     var dabi = {
         dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
     };
 
+    //console.log(dabi);
+    
 
-
+    //Получение кода контракта для передачи в другие контракты
 
     const boc = new BocModule(client);
 
-    fs.writeFile(hash, boc.decode_tvc({tvc: tvc_string}), function (err) {
-        if (err) return console.log(err);
-        console.log('Create!');
-     });
+    parametr = {
+        tvc: tvc_string
+    }
+
+    const temp = await boc.decode_tvc(parametr);
+
+    //console.log(JSON.stringify(temp));
+
+    
 
 
 
