@@ -1,4 +1,4 @@
-const {TonClient, signerKeys} = require("@tonclient/core");
+const {TonClient, signerKeys, BocModule} = require("@tonclient/core");
 const {libNode} = require("@tonclient/lib-node");
 const { Account } = require("@tonclient/appkit");
 const { consoleTerminal, runCommand} = require("tondev");
@@ -49,7 +49,7 @@ async function main(client) {
         file: path.resolve(__dirname, hash + ".sol")
     });
 
-    const tvc_string = await fs.readFileSync(hash + ".tvc", {encoding: 'base64'});
+    const tvc_string = fs.readFileSync(hash + ".tvc", {encoding: 'base64'});
 
     const abi = await JSON.parse(fs.readFileSync(hash + ".abi.json"));
 
@@ -81,8 +81,17 @@ async function main(client) {
         dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
     };
 
-    console.log(decode_tvc( {
-        tvc: tvc_string
-    }));
+
+
+
+    const boc = new BocModule(client);
+
+    fs.writeFile(hash, boc.decode_tvc({tvc: tvc_string}), function (err) {
+        if (err) return console.log(err);
+        console.log('Create!');
+     });
+
+
+
 
 }
