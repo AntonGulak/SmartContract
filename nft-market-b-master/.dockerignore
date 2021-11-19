@@ -1,0 +1,5 @@
+.git
+docker-compose*
+Dockerfile
+.env*
+.git*

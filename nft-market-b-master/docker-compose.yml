@@ -1,0 +1,11 @@
+services:
+  nft-b:
+    image: gitlab.itglobal.com:5050/itgold/nft-market/nft-market-b:latest
+    env_file: .env
+    command: sh -c "npm run migrate && npm run start"
+    container_name: backend
+    volumes:
+      - ./public:/api/public
+    restart: always
+    ports:
+      - "3001:3001"

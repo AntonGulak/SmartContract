@@ -1,0 +1,11 @@
+ALTER TABLE "gallery" DROP COLUMN "description";
+ALTER TABLE "gallery" ADD COLUMN "nft_address" varchar;
+ALTER TABLE "gallery" ADD COLUMN "nft_public_key" varchar;
+ALTER TABLE "gallery" ADD COLUMN "email" varchar;
+ALTER TABLE "gallery" ADD COLUMN "description_full" varchar;
+ALTER TABLE "gallery" ADD COLUMN "description_short" varchar;
+ALTER TABLE "gallery" ADD COLUMN "country" varchar;
+ALTER TABLE "gallery" ADD COLUMN "city" varchar;
+ALTER TABLE "gallery" ADD COLUMN "site" varchar;
+ALTER TABLE "gallery" ADD COLUMN "insta" varchar;
+ALTER TABLE "gallery" ADD COLUMN "fb" varchar;

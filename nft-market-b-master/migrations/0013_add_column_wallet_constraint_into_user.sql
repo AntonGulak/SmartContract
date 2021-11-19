@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD CONSTRAINT "idx-user-wallet" UNIQUE (wallet);
