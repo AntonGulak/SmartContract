@@ -52,7 +52,7 @@ class CompileAndDeploy {
         //json связки ключей
         const signer = await signerKeys(keys);
 
-        tempClient = this.client;
+        let tempClient = this.client;
 
         //предварительно создаем контракт
         const acc = new Account(AccContract, { signer, tempClient });
