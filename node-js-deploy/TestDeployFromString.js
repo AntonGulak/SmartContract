@@ -8,9 +8,6 @@ const crypto = require('crypto');
 
 
 
-
-
-// Application initialization
 class TestDeployFromString {
     #client;
     #hash;
@@ -44,23 +41,6 @@ class TestDeployFromString {
         await runCommand(consoleTerminal, "sol compile", {
             file: path.resolve(__dirname, this.#hash + ".sol")
         });
-
-        //Сформировываем dabi для экспорта
-        const abi =  await JSON.parse(fs.readFileSync(this.#hash + ".abi.json"));
-
-        const dabi =  {
-            dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
-        };
-
-        fs.writeFileSync(this.#hash + ".dabi.json", JSON.stringify(dabi, null, '\t'));
-
-        //Сформировываем tvc_decode для экспорта
-        const tvc_string = fs.readFileSync(this.#hash + ".tvc", {encoding: 'base64'});
-        //const client = new TonClient();
-        const boc = new BocModule(this.#client);
-        const temp = await boc.decode_tvc({ tvc: tvc_string});
-        fs.writeFileSync(this.#hash + ".decode.json", JSON.stringify(temp, null, '\t'));
-
      }
 
 
@@ -78,10 +58,10 @@ class TestDeployFromString {
         //json связки ключей
         const signer = signerKeys(keys);
 
-        const temp = this.#client;
+        const client = this.#client;
 
         //предварительно создаем контракт
-        const acc = new Account(AccContract, { signer, temp });
+        const acc = new Account(AccContract, { signer, client });
 
         //получаем адрес будущего контракта
         const address = await acc.getAddress();
@@ -100,12 +80,27 @@ class TestDeployFromString {
 
 
 
-    getTvcDecode() {
-        return  JSON.parse(fs.readFileSync(this.#hash + ".decode.json"));;
+     async getTvcDecode() {
+        //Сформировываем tvc_decode для экспорта
+        const tvc_string = fs.readFileSync(this.#hash + ".tvc", {encoding: 'base64'});
+        const boc = new BocModule(this.#client);
+        const temp = await boc.decode_tvc({ tvc: tvc_string});
+        //fs.writeFileSync(this.#hash + ".decode.json", JSON.stringify(temp, null, '\t'));
+
+        return  JSON.stringify(temp, null, '\t');
     }
 
-    getDabi() {
-        return  JSON.parse(fs.readFileSync(this.#hash + ".dabi.json"));;
+    async getDabi() {
+        const abi =  await JSON.parse(fs.readFileSync(this.#hash + ".abi.json"));
+
+        const dabi =  {
+            dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
+        };
+
+        //fs.writeFileSync(this.#hash + ".dabi.json", JSON.stringify(dabi, null, '\t'));
+
+        return  JSON.stringify(dabi, null, '\t');
+
     }
 
     getName() {
@@ -125,5 +120,5 @@ let d = new TestDeployFromString(solFile, endpoints);
 d.compileMethod();
 d.deployMethod();
 d.close();
-console.log(d.getTvcDecode());
-console.log(d.getDabi());
+d.getTvcDecode();
+d.getDabi();
