@@ -28,6 +28,9 @@ class TestDeployFromString {
 
      }
 
+     close(){
+         this.#client.close();
+     }
 
      async compileMethod() {
 
@@ -53,6 +56,7 @@ class TestDeployFromString {
 
         //Сформировываем tvc_decode для экспорта
         const tvc_string = fs.readFileSync(this.#hash + ".tvc", {encoding: 'base64'});
+        //const client = new TonClient();
         const boc = new BocModule(this.#client);
         const temp = await boc.decode_tvc({ tvc: tvc_string});
         fs.writeFileSync(this.#hash + ".decode.json", JSON.stringify(temp, null, '\t'));
@@ -70,24 +74,20 @@ class TestDeployFromString {
 
         //Сформировываем связку ключей
         const keys = await this.#client.crypto.generate_random_sign_keys();
-    
+
         //json связки ключей
         const signer = signerKeys(keys);
 
-        console.log(this.#client);
-
         const temp = this.#client;
-
-        console.log(temp);
 
         //предварительно создаем контракт
         const acc = new Account(AccContract, { signer, temp });
-    
+
         //получаем адрес будущего контракта
         const address = await acc.getAddress();
-    
+
         console.log(`New account future address: ${address}`);
-    
+
         //Деплоим
         try {
             await acc.deploy({ useGiver: true });
@@ -98,7 +98,7 @@ class TestDeployFromString {
         }
      } //end methoddeploy
 
-  
+
 
     getTvcDecode() {
         return  JSON.parse(fs.readFileSync(this.#hash + ".decode.json"));;
@@ -111,12 +111,8 @@ class TestDeployFromString {
     getName() {
         return  this.#hash;
     }
-    
-    
-    close(){
-        this.#client.close();
-    }
- 
+
+
 
 
 } //end class
@@ -128,10 +124,6 @@ const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contrac
 let d = new TestDeployFromString(solFile, endpoints);
 d.compileMethod();
 d.deployMethod();
-
-// d.close();
-// console.log(d.getTvcDecode());
-// console.log(d.getDabi());
-
- 
- 
+d.close();
+console.log(d.getTvcDecode());
+console.log(d.getDabi());
