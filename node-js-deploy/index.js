@@ -13,49 +13,69 @@ TonClient.useBinaryLibrary(libNode);
 // Application initialization
 class CompileAndDeploy {
 
-     constructor(solFile){
+     constructor(solFile, network){
 
-        this.client = new TonClient({
-            network: {
-                endpoints: ["http://localhost"]
-            }
-        });
+        this.soFfile = solFile;
+        this.network = network;
+        this.hash = crypto.createHash('md5').update(solFile).digest('hex');
+     }
+     
 
-        const hash = crypto.createHash('md5').update(solFile).digest('hex');
+     async compileMethod() {
 
         //Create .sol file
-        fs.writeFile(hash + ".sol", solFile, function (err) {
+        fs.writeFileSync(this.hash + ".sol", solFile, function (err) {
             if (err) return console.log(err);
          });
 
         //Compile
-        runCommand(consoleTerminal, "sol compile", {
-            file: path.resolve(__dirname, hash + ".sol")
+
+        await runCommand(consoleTerminal, "sol compile", {
+            file: path.resolve(__dirname, this.hash + ".sol")
         });
-    
-        this.tvc_string = fs.readFileSync(hash + ".tvc", {encoding: 'base64'});
-    
-        this.abi =  JSON.parse(fs.readFileSync(hash + ".abi.json"));
+
+        //Сформировываем dabi для экспорта
+        const abi =  await JSON.parse(fs.readFileSync(this.hash + ".abi.json"));
+
+        const dabi =  {
+            dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
+        };
+
+        fs.writeFileSync(this.hash + ".dabi.json", JSON.stringify(dabi, null, '\t'));
+
+        //Сформировываем tvc_decode для экспорта
+        const tvc_string = fs.readFileSync(this.hash + ".tvc", {encoding: 'base64'});
+        const client = new TonClient();
+        const boc = new BocModule(client);
+        const temp = await boc.decode_tvc({ tvc: tvc_string});
+        fs.writeFileSync(this.hash + ".decode.json", JSON.stringify(temp, null, '\t'));
+        client.close();
+
      }
 
 
-     async deploy() {
+     async deployMethod() {
+
+        const client = new TonClient({
+            network: {
+                endpoints: [this.network]
+            }
+        });
 
         const AccContract = {
-            abi: this.abi,
-            tvc: this.tvc_string,
+            abi: JSON.parse(fs.readFileSync(this.hash + ".abi.json")),
+            tvc: fs.readFileSync(this.hash + ".tvc", {encoding: 'base64'}),
         };
+
     
         //Сформировываем связку ключей
-        const keys = await this.client.crypto.generate_random_sign_keys();
+        const keys = await client.crypto.generate_random_sign_keys();
     
         //json связки ключей
         const signer = await signerKeys(keys);
 
-        let tempClient = this.client;
-
         //предварительно создаем контракт
-        const acc = new Account(AccContract, { signer, tempClient });
+        const acc = new Account(AccContract, { signer, client });
     
         //получаем адрес будущего контракта
         const address = await acc.getAddress();
@@ -63,36 +83,39 @@ class CompileAndDeploy {
         console.log(`New account future address: ${address}`);
     
         //Деплоим
-        await acc.deploy({ useGiver: true });
-        console.log(`Hello contract was deployed at address: ${address}`);
-     }
-
-     getDabi() {
-        var dabi = {
-            dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
-        };
-
-        return dabi;
-     }
-
-     async getTvcDecode() {
-        const boc = new BocModule(client);
-
-        parametr = {
-            tvc: tvc_string
+        try {
+            await acc.deploy({ useGiver: true });
+        } catch(err) {
+            console.error(err);
+        } finally {
+            console.log(`Hello contract was deployed at address: ${address}`);
+            client.close();
         }
-    
-        const temp = await boc.decode_tvc(parametr);
+     } //end methoddeploy
 
-        return JSON.stringify(temp);
-     }
+  
+
+    getTvcDecode() {
+        return  JSON.parse(fs.readFileSync(this.hash + ".decode.json"));;
+    }
+
+    getDabi() {
+        return  JSON.parse(fs.readFileSync(this.hash + ".dabi.json"));;
+    }
+
+ 
 
 
 } //end class
 
 
-//const endpoints = "http://localhost"
-const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
+// const endpoints = "http://localhost"
+// const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
 
-let d = new CompileAndDeploy(solFile);
-d.deploy();
+// let d = new CompileAndDeploy(solFile, endpoints);
+// d.compileMethod();
+// d.deployMethod();
+// console.log(d.getTvcDecode());
+// console.log(d.getDabi());
+ 
+ 
