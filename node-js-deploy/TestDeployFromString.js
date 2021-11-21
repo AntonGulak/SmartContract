@@ -14,6 +14,7 @@ const crypto = require('crypto');
 class TestDeployFromString {
     #client;
     #hash;
+    #signer;
 
      constructor(solFile, network){
         TonClient.useBinaryLibrary(libNode);
@@ -63,6 +64,18 @@ class TestDeployFromString {
 
      }
 
+     async createSigner() {
+        //Сформировываем связку ключей
+        const keys = await this.#client.crypto.generate_random_sign_keys();
+    
+        //json связки ключей
+        this.signer = signerKeys(keys);
+     }
+
+     getSigner() {
+         return  JSON.stringify(this.signer);
+     }
+
 
      async deployMethod() {
 
@@ -72,30 +85,31 @@ class TestDeployFromString {
             tvc: fs.readFileSync(this.#hash + ".tvc", {encoding: 'base64'}),
         };
 
-        //Сформировываем связку ключей
-        const keys = await this.#client.crypto.generate_random_sign_keys();
-    
-        //json связки ключей
-        const signer = signerKeys(keys);
+        this.createSigner();
 
-        const temp = this.#client;
+        const _signer = this.getSigner();
+        console.log(JSON.stringify(this.signer));
+        console.log(this.getSigner());
+
+        const _client = this.#client;
 
         //предварительно создаем контракт
-        const acc = new Account(AccContract, { signer, temp });
+        const acc = new Account(AccContract, { _signer, _client });
     
         //получаем адрес будущего контракта
         const address = await acc.getAddress();
     
         console.log(`New account future address: ${address}`);
+        
     
         //Деплоим
-        try {
-            await acc.deploy({ useGiver: true });
-        } catch(err) {
-            console.error(err);
-        } finally {
-            console.log(`Hello contract was deployed at address: ${address}`);
-        }
+        // try {
+        //     await acc.deploy({ useGiver: true });
+        // } catch(err) {
+        //     console.error(err);
+        // } finally {
+        //     console.log(`Hello contract was deployed at address: ${address}`);
+        // }
      } //end methoddeploy
 
   
@@ -122,11 +136,12 @@ const endpoints = "http://localhost"
 const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
 
 let d = new TestDeployFromString(solFile, endpoints);
+
 d.compileMethod();
 d.deployMethod();
-d.close();
-console.log(d.getTvcDecode());
-console.log(d.getDabi());
+// d.close();
+// console.log(d.getTvcDecode());
+// console.log(d.getDabi());
 
  
  
