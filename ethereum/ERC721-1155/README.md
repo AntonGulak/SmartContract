@@ -1,1 +1,2 @@
-![image](https://user-images.githubusercontent.com/55970327/156822914-4bd18912-23a8-4d1d-9c23-f8fb8e8ff280.png)
+https://testnets.opensea.io/assets/0xb7b15f66d235f14c0942864f55abf76d394df0b0/0
+![image](https://user-images.githubusercontent.com/55970327/157923512-43fe7464-31e4-4c78-940f-2358e735242e.png)
