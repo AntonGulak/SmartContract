@@ -5,9 +5,9 @@ pragma AbiHeader expire;
 contract token {
 
    // Структура токена (представим, что это картина, имеющее своё название, автора и год)
-    struct Token {
-        string name;
-        string nameAuthor;
+    struct RarityType {
+        string rarityName;
+        amount number;
         uint year;
     }
 

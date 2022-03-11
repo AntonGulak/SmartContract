@@ -11,11 +11,14 @@ const crypto = require('crypto');
 class TestDeployFromString {
     #client;
     #hash;
+    #dir
 
      constructor(solFile, network){
         TonClient.useBinaryLibrary(libNode);
 
-        this.#hash = crypto.createHash('md5').update(solFile).digest('hex');
+        const temp = crypto.createHash('md5').update(solFile).digest('hex');
+
+        this.#hash =  temp + '/' + temp;
 
         this.#client = new TonClient({
             network: {
@@ -23,10 +26,12 @@ class TestDeployFromString {
             }
         });
 
-     }
+        if (!fs.existsSync(temp)){
+            fs.mkdirSync(temp);
+        }
 
-     close(){
-         this.#client.close();
+
+
      }
 
      async compileMethod() {
@@ -39,9 +44,16 @@ class TestDeployFromString {
         //Compile
 
         await runCommand(consoleTerminal, "sol compile", {
-            file: path.resolve(__dirname, this.#hash + ".sol")
-        });
+            file: path.resolve( __dirname + "\\" + "4120707e7e06c7607319cffa1262a25b" , "4120707e7e06c7607319cffa1262a25b.sol")
+         });
+
+
+         
+     
      }
+
+    
+     
 
 
      async deployMethod() {
@@ -107,6 +119,12 @@ class TestDeployFromString {
         return  this.#hash;
     }
 
+    close(){
+        this.#client.close();
+
+    }
+
+
 
 
 
@@ -118,7 +136,7 @@ const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contrac
 
 let d = new TestDeployFromString(solFile, endpoints);
 d.compileMethod();
-d.deployMethod();
-d.close();
-d.getTvcDecode();
-d.getDabi();
+// d.deployMethod();
+// d.close();
+// d.getTvcDecode();
+// d.getDabi();
