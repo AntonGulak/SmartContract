@@ -4,9 +4,9 @@ task("balanceOfERC1155", "to mint your ERC721 token")
   .addParam("id", "token id")
   .setAction(async (taskArgs, hre) => {
     let wallet = await ethers.getSigner();
-    const ERC721 = await ethers.getContractFactory("TokenERC1155");
-    const ERC721hardhat = await ERC721.attach(taskArgs.contract);
-    let balance = await ERC721hardhat.connect(wallet).balanceOf(wallet.address, taskArgs.id);
+    const ERC1155 = await ethers.getContractFactory("TokenERC1155");
+    const ERC1155hardhat = await ERC1155.attach(taskArgs.contract);
+    let balance = await ERC1155hardhat.connect(wallet).balanceOf(wallet.address, taskArgs.id);
     console.log(balance);
   });
 
@@ -17,7 +17,7 @@ task("mintERC1155", "to mint your ERC1155 token")
 .addParam("amount", "amount tokens")
 .setAction(async (taskArgs, hre) => {
   let wallet = await ethers.getSigner();
-  const ERC721 = await ethers.getContractFactory("TokenERC1155");
-  const ERC721hardhat = await ERC721.attach(taskArgs.contract);
-  let balance = await ERC721hardhat.connect(wallet).mint(taskArgs.tokenid, taskArgs.amount);
+  const ERC1155 = await ethers.getContractFactory("TokenERC1155");
+  const ERC1155hardhat = await ERC1155.attach(taskArgs.contract);
+  await ERC1155hardhat.connect(wallet).mint(taskArgs.tokenid, taskArgs.amount);
 });

@@ -12,15 +12,23 @@ contract TokenERC1155 is AccessControl, ERC1155 {
 
     constructor(string memory _name, string memory _symbol, string memory baseURI) 
             public ERC1155(baseURI) {
+
+         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         name = _name;
         symbol = _symbol;
     }
-    function mint(uint256 id, uint256 amount) public {
+
+    function mint(uint256 id, uint256 amount) public onlyAdmin {
         _mint(msg.sender, id, amount, "");
     }
+
+     function burn(uint256 id, uint256 amount) external {
+        _burn(msg.sender, id, amount);
+    }
+
     
     function uri(uint256 _id) override public view returns (string memory) {
-        return string(
+    return string(
         abi.encodePacked(
             super.uri(0),
             Strings.toString(_id),
@@ -32,6 +40,14 @@ contract TokenERC1155 is AccessControl, ERC1155 {
     function supportsInterface(bytes4 interfaceId) public 
              view virtual override(ERC1155, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
+    }
+
+    modifier onlyAdmin() {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "function only for admin"
+        );
+        _;
     }
 
 }

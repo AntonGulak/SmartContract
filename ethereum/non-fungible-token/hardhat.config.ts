@@ -10,7 +10,7 @@ import "./tasks/ERC1155Tasks";
 dotenv.config();
 
 const config: HardhatUserConfig  = {
-  defaultNetwork: "rinkeby",
+  defaultNetwork: "hardhat",
   networks: {
     hardhat: {
     },
