@@ -1,4 +1,4 @@
-https://vk.com/away.php?to=https%3A%2F%2Ftestnets.opensea.io%2Fassets%2F0xb7b15f66d235f14c0942864f55abf76d394df0b0%2F0&cc_key=
+https://testnets.opensea.io/assets/0xb7b15f66d235f14c0942864f55abf76d394df0b0/0
 ![image](https://user-images.githubusercontent.com/55970327/158013332-e0a3e406-0ad6-4eba-b834-2283eec49090.png)
 
 https://testnets.opensea.io/assets/0xb885cd0ebcbbe4d9c4f7184b4603a920fbaec2e6/0
