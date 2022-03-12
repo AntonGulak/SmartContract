@@ -2,10 +2,12 @@ pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract TokenERC721 is AccessControl, ERC721 {
 
-    uint private _tokedId;
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenID; 
     string private _baseMetaURI;
 
     mapping(uint256 => string) public id_to_meta;
@@ -19,10 +21,10 @@ contract TokenERC721 is AccessControl, ERC721 {
     function mint(string memory metadata) public onlyAdmin {
         require(meta_to_flag[metadata] == false, "token repetition");
 
-        _safeMint(msg.sender, _tokedId);
-        id_to_meta[_tokedId] = metadata;
+        _safeMint(msg.sender,  _tokenID.current());
+        id_to_meta[_tokenID.current()] = metadata;
         meta_to_flag[metadata] = true;
-        _tokedId += 1;
+        _tokenID.increment();
     }
 
     function burn(uint256 tokenId) external onlyAdmin {

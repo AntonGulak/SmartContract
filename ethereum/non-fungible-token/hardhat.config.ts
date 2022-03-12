@@ -3,12 +3,14 @@ import "@nomiclabs/hardhat-etherscan";
 import '@nomiclabs/hardhat-ethers';
 import "@nomiclabs/hardhat-waffle";
 import "solidity-coverage";
-import "./tasks/ERC721Tasks";
 import * as dotenv from "dotenv";
+
+import "./tasks/ERC721Tasks";
+import "./tasks/ERC1155Tasks";
 dotenv.config();
 
 const config: HardhatUserConfig  = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: "rinkeby",
   networks: {
     hardhat: {
     },
