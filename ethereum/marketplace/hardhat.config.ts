@@ -5,8 +5,6 @@ import "@nomiclabs/hardhat-waffle";
 import "solidity-coverage";
 import * as dotenv from "dotenv";
 
-// import "./tasks/ERC721Tasks";
-// import "./tasks/ERC1155Tasks";
 dotenv.config();
 
 const config: HardhatUserConfig  = {

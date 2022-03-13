@@ -1,5 +1,4 @@
 require("@nomiclabs/hardhat-etherscan");
-require("@nomiclabs/hardhat-waffle");
 require('solidity-coverage');
 require('dotenv').config();
 require("./tasks/ERC20Tasks.js")

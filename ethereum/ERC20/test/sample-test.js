@@ -1,5 +1,5 @@
 const { expect } = require("chai")
-const { ethers, waffle } = require("hardhat");
+const { ethers } = require("hardhat");
 
 describe("ERC20 contract", function () {
 
