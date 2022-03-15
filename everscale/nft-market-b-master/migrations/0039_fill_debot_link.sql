@@ -1,7 +1,0 @@
-INSERT INTO debot_link (id, type, link, qr_link) VALUES
-(1, 'buy', 'https://uri.ton.surf/debot/0:194ec6988c4e1b012eb53bb77bfa5a21eec97efacb6b39291271ccef636c1d96?net=devnet', 'ton://debot/0:194ec6988c4e1b012eb53bb77bfa5a21eec97efacb6b39291271ccef636c1d96?net=devnet'),
-(2, 'set auction', 'https://uri.ton.surf/debot/0:32a79c18456fb38e0f823bdc1f4d56c4bc37fc87f8a3c51e76afdeb8db20f4cb?net=devnet', 'https://uri.ton.surf/debot/0:4d33a5caacbf99fe80c47ee1e57629d58fdcc45cecfda34dd7fe69a6cc71c593?net=devnet'),
-(3, 'offer', 'https://uri.ton.surf/debot/0:32a79c18456fb38e0f823bdc1f4d56c4bc37fc87f8a3c51e76afdeb8db20f4cb?net=devnet', 'https://uri.ton.surf/debot/0:4d33a5caacbf99fe80c47ee1e57629d58fdcc45cecfda34dd7fe69a6cc71c593?net=devnet'),
-(4, 'stop auction', 'https://uri.ton.surf/debot/0:32a79c18456fb38e0f823bdc1f4d56c4bc37fc87f8a3c51e76afdeb8db20f4cb?net=devnet', 'https://uri.ton.surf/debot/0:4d33a5caacbf99fe80c47ee1e57629d58fdcc45cecfda34dd7fe69a6cc71c593?net=devnet'),
-(5, 'stop direct sale', 'https://uri.ton.surf/debot/0:32a79c18456fb38e0f823bdc1f4d56c4bc37fc87f8a3c51e76afdeb8db20f4cb?net=devnet', 'https://uri.ton.surf/debot/0:4d33a5caacbf99fe80c47ee1e57629d58fdcc45cecfda34dd7fe69a6cc71c593?net=devnet'),
-(6, 'set direct sale', 'https://uri.ton.surf/debot/0:3bd9cefa1e1450da44c096c51b6fdcfe71a85236778e7bff4bf0d711eb5a7bcd?net=devnet', 'ton://debot/0:3bd9cefa1e1450da44c096c51b6fdcfe71a85236778e7bff4bf0d711eb5a7bcd?net=devnet');
