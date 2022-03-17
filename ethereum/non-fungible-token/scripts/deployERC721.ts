@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 async function main() {
   const ERC721 = await ethers.getContractFactory("TokenERC721");
-  const hardhatERC721 = await ERC721.deploy("Character", "CHARACTER");
+  const hardhatERC721 = await ERC721.deploy("Character1", "CHARACTER1");
   console.log("Contract deployed to:", hardhatERC721.address);
 }
 
