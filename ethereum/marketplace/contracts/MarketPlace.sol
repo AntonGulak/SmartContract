@@ -2,6 +2,7 @@ pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "hardhat/console.sol";
 
 interface IERC721 {
     function mint(address owner, string memory metadata) external;
@@ -13,8 +14,7 @@ contract MartketPlace is AccessControl {
     struct TokenCurrentInfo {
         uint256 currentPrice;
         address lastBuyer;
-        uint88 bidsCounter;
-        bool onSale;
+        uint96 bidsCounter;
     }
 
     mapping (bytes32 => TokenCurrentInfo) public tokenInfo;
@@ -36,7 +36,7 @@ contract MartketPlace is AccessControl {
         ERC721Factory = _ERC721Factory;
     }
 
-    function createItem(string memory metadata, address owner) public {
+    function createItem(string memory metadata, address owner) external {
         IERC721(ERC721Factory).mint(owner, metadata);
     }
 
@@ -77,7 +77,8 @@ contract MartketPlace is AccessControl {
             msg.sender, 
             block.timestamp)
         );
-        tokenInfo[tokenHash] = TokenCurrentInfo(initPrice, address(0), 0, true);
+        console.logBytes32(tokenHash);
+        tokenInfo[tokenHash] = TokenCurrentInfo(initPrice, address(0), 0);
     }
 
     function cancel(
@@ -119,9 +120,6 @@ contract MartketPlace is AccessControl {
              owner, 
              timestamp)
         );
-        require(tokenInfo[tokenHash].onSale == true,
-                "You can't buy this token"
-        );
         IERC20(exchangeERC20Token).transferFrom(msg.sender, owner, initPrice);
         IERC721(tokenAddr).transferFrom(address(this), msg.sender, id);
         delete tokenInfo[tokenHash];
@@ -151,9 +149,6 @@ contract MartketPlace is AccessControl {
                 "Auction is finished"
         );   
         TokenCurrentInfo memory tokenCurrentInfo = tokenInfo[tokenHash];
-        require(tokenCurrentInfo.onSale == true,
-                "You can't make a bid for token"
-        );
         require(amountBid > tokenCurrentInfo.currentPrice + minStep,
                 "You bid is small"
         );
@@ -168,8 +163,7 @@ contract MartketPlace is AccessControl {
         tokenInfo[tokenHash] = TokenCurrentInfo(
             amountBid,
             msg.sender,
-            tokenCurrentInfo.bidsCounter + 1,
-            true
+            tokenCurrentInfo.bidsCounter + 1
         );
         emit Bid(amountBid, id, initPrice, minStep, tokenAddr, owner, true);
       }

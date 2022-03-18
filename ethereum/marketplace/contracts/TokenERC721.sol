@@ -3,12 +3,16 @@ pragma solidity ^0.8.11;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "hardhat/console.sol";
 
 contract TokenERC721 is AccessControl, ERC721 {
+
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenID; 
     string private _baseMetaURI;
+
 
     mapping(uint256 => string) public id_to_meta;
     mapping(string => bool) public meta_to_flag;
@@ -18,7 +22,11 @@ contract TokenERC721 is AccessControl, ERC721 {
         _baseMetaURI = "https://ipfs.io/ipfs/";
     }
 
-    function mint(address owner, string memory metadata) external onlyAdmin {
+    function setupMinterRole(address account) external onlyAdmin {
+        _setupRole(MINTER_ROLE, account);
+    }
+
+    function mint(address owner, string memory metadata) external onlyMinter {
         require(meta_to_flag[metadata] == false, "token repetition");
 
         _safeMint(owner,  _tokenID.current());
@@ -55,6 +63,14 @@ contract TokenERC721 is AccessControl, ERC721 {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
             "function only for admin"
+        );
+        _;
+    }
+
+       modifier onlyMinter() {
+        require(
+            hasRole(MINTER_ROLE, msg.sender),
+            "function only for minter"
         );
         _;
     }
