@@ -1,41 +1,43 @@
 pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface InteractionWithTokenFactory {
-    function mint(string memory metadata) external;
-    function burn(uint256 tokenId) external;
+interface IERC721 {
+    function mint(address owner, string memory metadata) external;
+    function transferFrom(address from, address to, uint256 tokenId) external;
 }
 
 contract MartketPlace is AccessControl {
 
-    event TokenListing(
-        uint256 id,
-        uint256 initPrice,
-        uint256 minStep,
-        address indexed tokenAddr,
-        bool isAuction 
-    );
-
-     struct TokenCurrentInfo {
-         uint256 currentPrice;
-         address lastBuyer;
-         uint88 bidsCounter;
-         bool onSale;
-     }
+    struct TokenCurrentInfo {
+        uint256 currentPrice;
+        address lastBuyer;
+        uint88 bidsCounter;
+        bool onSale;
+    }
 
     mapping (bytes32 => TokenCurrentInfo) public tokenInfo;
     
     address public exchangeERC20Token;
+    address public ERC721Factory;
 
-    constructor() {
+    constructor(address _exchangeERC20Token, address _ERC721Factory) {
          _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+         exchangeERC20Token = _exchangeERC20Token;
+         ERC721Factory = _ERC721Factory;
     }
 
     function setExchangeERC20Token(address _exchangeERC20Token) external onlyAdmin {
         exchangeERC20Token = _exchangeERC20Token;
+    }
+
+    function setERC721Factory(address _ERC721Factory) external onlyAdmin {
+        ERC721Factory = _ERC721Factory;
+    }
+
+    function createItem(string memory metadata, address owner) public {
+        IERC721(ERC721Factory).mint(owner, metadata);
     }
 
     function listItem(
@@ -96,6 +98,7 @@ contract MartketPlace is AccessControl {
              timestamp)
         );
         delete tokenInfo[tokenHash];
+        emit Cancel(id, initPrice, minStep, tokenAddr, false);
     }
 
     function buyItem(
@@ -122,6 +125,7 @@ contract MartketPlace is AccessControl {
         IERC20(exchangeERC20Token).transferFrom(msg.sender, owner, initPrice);
         IERC721(tokenAddr).transferFrom(address(this), msg.sender, id);
         delete tokenInfo[tokenHash];
+        emit BuyItem(id, initPrice, minStep, tokenAddr, owner, false);
     }
  
     function makeBid(
@@ -167,7 +171,8 @@ contract MartketPlace is AccessControl {
             tokenCurrentInfo.bidsCounter + 1,
             true
         );
-        }
+        emit Bid(amountBid, id, initPrice, minStep, tokenAddr, owner, true);
+      }
     }   
 
     function finishAuction(
@@ -202,9 +207,10 @@ contract MartketPlace is AccessControl {
                 id
             );
         delete tokenInfo[tokenHash];
+        emit FinishAuction(id, initPrice, minStep, tokenAddr, tokenCurrentInfo.lastBuyer, owner, true);
     }
  
-    function cancellAuction(
+    function cancelAuction(
         uint256 id,
         uint256 initPrice,
         uint256 minStep,
@@ -236,6 +242,12 @@ contract MartketPlace is AccessControl {
                 id
             );
         delete tokenInfo[tokenHash];
+        emit CancelAuction(id, initPrice, minStep, tokenAddr, owner, true);
+    }
+
+    function transfer(address payable destination, uint256 amount) external onlyAdmin {
+        (bool success,) = destination.call{value: amount}("");
+        require(success, "Failed to send money");
     }
 
     modifier onlyAdmin() {
@@ -245,4 +257,58 @@ contract MartketPlace is AccessControl {
         );
         _;
     }
+
+    event TokenListing(
+        uint256 id,
+        uint256 initPrice,
+        uint256 minStep,
+        address indexed tokenAddr,
+        bool isAuction
+    );
+
+    event Cancel(
+        uint256 id,
+        uint256 initPrice,
+        uint256 minStep,
+        address indexed tokenAddr,
+        bool isAuction
+    );
+
+    event BuyItem(
+        uint256 id,
+        uint256 initPrice,
+        uint256 minStep,
+        address indexed tokenAddr,
+        address indexed lastOwner,
+        bool isAuction
+    );
+
+    event Bid(
+        uint256 amountBid, 
+        uint256 id,
+        uint256 initPrice,
+        uint256 minStep,
+        address indexed tokenAddr,
+        address indexed currentOwner,
+        bool isAuction
+    );
+
+    event FinishAuction(
+        uint256 id,
+        uint256 initPrice,
+        uint256 minStep,
+        address indexed tokenAddr,
+        address indexed newOwner,
+        address indexed lastOwner,
+        bool isAuction
+    );
+
+    event CancelAuction(
+        uint256 id,
+        uint256 initPrice,
+        uint256 minStep,
+        address indexed tokenAddr,
+        address indexed owner,
+        bool isAuction
+    );
 }

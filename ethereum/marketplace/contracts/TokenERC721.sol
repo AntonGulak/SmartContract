@@ -18,10 +18,10 @@ contract TokenERC721 is AccessControl, ERC721 {
         _baseMetaURI = "https://ipfs.io/ipfs/";
     }
 
-    function mint(string memory metadata) external onlyAdmin {
+    function mint(address owner, string memory metadata) external onlyAdmin {
         require(meta_to_flag[metadata] == false, "token repetition");
 
-        _safeMint(msg.sender,  _tokenID.current());
+        _safeMint(owner,  _tokenID.current());
         id_to_meta[_tokenID.current()] = metadata;
         meta_to_flag[metadata] = true;
         _tokenID.increment();
