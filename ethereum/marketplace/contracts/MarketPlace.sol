@@ -166,7 +166,6 @@ contract MartketPlace is AccessControl {
              owner, 
              timestamp)
         );
-        require(initPrice > 0, "Price must be greater than 0");
         require(block.timestamp - timestamp < 2 weeks,
                 "Auction is finished"
         );   
@@ -182,8 +181,7 @@ contract MartketPlace is AccessControl {
         );
         if (tokenCurrentInfo.lastBuyer != address(0)) {
             IERC20(exchangeERC20Token)
-                .transferFrom(
-                    address(this),
+                .transfer(
                     tokenCurrentInfo.lastBuyer,
                     tokenCurrentInfo.currentPrice
                 );
@@ -216,12 +214,20 @@ contract MartketPlace is AccessControl {
         require(tokenCurrentInfo.bidsCounter > 2,
                 "Auction cannot be finished"
         ); 
+        
         IERC721(tokenAddr)
             .transferFrom(
                 address(this),
                 tokenCurrentInfo.lastBuyer,
                 id
-            );
+        );
+       
+        IERC20(exchangeERC20Token)
+            .transfer(
+                owner,
+                tokenCurrentInfo.currentPrice
+        );
+
         delete tokenInfo[tokenHash];
         emit FinishAuction(id, initPrice, minStep, tokenAddr, tokenCurrentInfo.lastBuyer, owner, true);
     }
@@ -257,13 +263,17 @@ contract MartketPlace is AccessControl {
                 owner,
                 id
             );
+
+        if (tokenCurrentInfo.lastBuyer != address(0)) {
+            IERC20(exchangeERC20Token)
+                .transfer(
+                    tokenCurrentInfo.lastBuyer,
+                    tokenCurrentInfo.currentPrice
+                );
+        }
+        
         delete tokenInfo[tokenHash];
         emit CancelAuction(id, initPrice, minStep, tokenAddr, owner, true);
-    }
-
-    function transfer(address payable destination, uint256 amount) external onlyAdmin {
-        (bool success,) = destination.call{value: amount}("");
-        require(success, "Failed to send money");
     }
 
     modifier onlyAdmin() {
