@@ -282,7 +282,7 @@ contract MartketPlace is AccessControl {
     modifier onlyAdmin() {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
-            "function only for admin"
+            "Function only for admin"
         );
         _;
     }

@@ -67,7 +67,7 @@ contract TokenERC721 is AccessControl, ERC721 {
         _;
     }
 
-       modifier onlyMinter() {
+    modifier onlyMinter() {
         require(
             hasRole(MINTER_ROLE, msg.sender),
             "function only for minter"

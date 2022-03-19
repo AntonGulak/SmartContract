@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 import { expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-describe("ERC721 contract", function () {
+describe("MarketPlace contract", function () {
 
   let hardhatERC721: any;
   let hardhatERC20: any;
@@ -49,6 +49,19 @@ describe("ERC721 contract", function () {
     expect(await hardhadMarketPlace.ERC721Factory()).to.equal(address);
   });
 
+  it("adminRole check", async function () {
+    await expect(hardhadMarketPlace.connect(user1)
+      .setERC721Factory(address))
+      .to.be.revertedWith(
+      'Function only for admin'
+    );
+    await expect(hardhadMarketPlace.connect(user1)
+      .setExchangeERC20Token(address))
+      .to.be.revertedWith(
+      'Function only for admin'
+    );
+  });
+
   it("createItem check", async function () {
     await hardhadMarketPlace.connect(owner).createItem("", user1.address);
     expect(await hardhatERC721.balanceOf(user1.address)).to.equal(1);
@@ -58,6 +71,11 @@ describe("ERC721 contract", function () {
   it("listItem check", async function () {
     await hardhadMarketPlace.connect(owner).createItem("", user1.address);
     await hardhatERC721.connect(user1).approve(hardhadMarketPlace.address, 0);
+    await expect(hardhadMarketPlace.connect(user1)
+      .listItem(0, 0, hardhatERC721.address))
+      .to.be.revertedWith(
+      'Price must be greater than 0'
+    );
     await hardhadMarketPlace.connect(user1).listItem(0, 50, hardhatERC721.address);
 
     expect(await hardhatERC721.balanceOf(hardhadMarketPlace.address)).to.equal(1);
@@ -285,10 +303,56 @@ describe("ERC721 contract", function () {
       .cancelAuction(0, 50, 20, hardhatERC721.address, user1.address, timeStamp
     )
 
-    expect(await hardhatERC721.ownerOf(0)).to.equal(user1.address);
     expect(await hardhatERC20.balanceOf(user3.address)).to.equal(240);
     expect(await hardhatERC20.balanceOf(user2.address)).to.equal(amountERC20 - (240));
     expect(await hardhatERC721.ownerOf(0)).to.equal(user1.address);
+  });
+
+  it("cancelAuction check with 0 bid", async function () {
+    await hardhadMarketPlace.connect(owner).createItem("", user1.address);
+    await hardhatERC721.connect(user1).approve(hardhadMarketPlace.address, 0);
+    await hardhadMarketPlace.connect(user1).listItemOnAuction(0, 50, 20, hardhatERC721.address);
+
+    let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
+
+    await ethers.provider.send("evm_increaseTime", [2 * week + 1]);
+    await ethers.provider.send("evm_mine", []);
+
+    await hardhatERC20.connect(user2).transfer(hardhadMarketPlace.address, 50);
+    await hardhadMarketPlace.connect(user3)
+      .cancelAuction(0, 50, 20, hardhatERC721.address, user1.address, timeStamp
+    );
+    expect(await hardhatERC721.ownerOf(0)).to.equal(user1.address);
+    expect(await hardhatERC20.balanceOf(hardhadMarketPlace.address)).to.equal(50);
+  });
+
+  it("cancelAuction check with more than 2 bids", async function () {
+    await hardhadMarketPlace.connect(owner).createItem("", user1.address);
+    await hardhatERC721.connect(user1).approve(hardhadMarketPlace.address, 0);
+    await hardhadMarketPlace.connect(user1).listItemOnAuction(0, 50, 20, hardhatERC721.address);
+
+    let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
+
+    hardhatERC20.connect(user2).approve(hardhadMarketPlace.address, 1000);
+    await hardhadMarketPlace.connect(user2)
+          .makeBid(70, 0, 50, 20, hardhatERC721.address, user1.address, timeStamp
+    );
+    await hardhatERC20.connect(user2).transfer(user3.address, 240);
+    await hardhatERC20.connect(user3).approve(hardhadMarketPlace.address, 240);
+    await hardhadMarketPlace.connect(user3)
+      .makeBid(90, 0, 50, 20, hardhatERC721.address, user1.address, timeStamp
+    );
+    await hardhadMarketPlace.connect(user2)
+    .makeBid(110, 0, 50, 20, hardhatERC721.address, user1.address, timeStamp
+    );
+    await ethers.provider.send("evm_increaseTime", [2 * week + 1]);
+    await ethers.provider.send("evm_mine", []);
+
+    await expect(hardhadMarketPlace.connect(user3)
+      .cancelAuction(0, 50, 20, hardhatERC721.address, user1.address, timeStamp))
+      .to.be.revertedWith(
+      'Auction cannot be cancelled'
+    );
   });
 
 });
