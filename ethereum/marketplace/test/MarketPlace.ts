@@ -21,7 +21,7 @@ describe("ERC721 contract", function () {
     await hardhatERC721.deployed();
 
     let ERC20 = await ethers.getContractFactory("ERC20");
-    hardhatERC20 = await ERC20.connect(owner).deploy(100);
+    hardhatERC20 = await ERC20.connect(user2).deploy(100);
     await hardhatERC20.deployed();
 
     let MarketPlace = await ethers.getContractFactory("MartketPlace");
@@ -69,7 +69,6 @@ describe("ERC721 contract", function () {
     expect((await hardhadMarketPlace.tokenInfo(hash)).bidsCounter).to.equal('0');
   });
 
-  
   it("listItemOnAuction check", async function () {
     await hardhadMarketPlace.connect(owner).createItem("", user1.address);
     await hardhatERC721.connect(user1).approve(hardhadMarketPlace.address, 0);
@@ -86,4 +85,41 @@ describe("ERC721 contract", function () {
     expect((await hardhadMarketPlace.tokenInfo(hash)).bidsCounter).to.equal('0');
   });
 
+  it("cancel check", async function () {
+    await hardhadMarketPlace.connect(owner).createItem("", user1.address);
+    await hardhatERC721.connect(user1).approve(hardhadMarketPlace.address, 0);
+    await hardhadMarketPlace.connect(user1).listItem(0, 50, hardhatERC721.address);
+
+    expect(await hardhatERC721.balanceOf(hardhadMarketPlace.address)).to.equal(1);
+    expect(await hardhatERC721.ownerOf(0)).to.equal(hardhadMarketPlace.address);
+
+    let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
+    let hash = await hardhadMarketPlace.getHash(0, 50, 0, hardhatERC721.address, false, user1.address, timeStamp);
+ 
+    expect((await hardhadMarketPlace.tokenInfo(hash)).currentPrice).to.equal(50);
+    await hardhadMarketPlace.connect(user1).cancel(0, 50, 0, hardhatERC721.address, timeStamp);
+    expect((await hardhadMarketPlace.tokenInfo(hash)).currentPrice).to.equal(0);
+  });
+
+  it("buyItem check", async function () {
+    await hardhadMarketPlace.connect(owner).createItem("", user1.address);
+    await hardhatERC721.connect(user1).approve(hardhadMarketPlace.address, 0);
+    await hardhadMarketPlace.connect(user1).listItem(0, 50, hardhatERC721.address);
+
+    expect(await hardhatERC721.balanceOf(hardhadMarketPlace.address)).to.equal(1);
+    expect(await hardhatERC721.ownerOf(0)).to.equal(hardhadMarketPlace.address);
+
+    let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
+    let hash = await hardhadMarketPlace.getHash(0, 50, 0, hardhatERC721.address, false, user1.address, timeStamp);
+ 
+    expect((await hardhadMarketPlace.tokenInfo(hash)).currentPrice).to.equal(50);
+    hardhatERC20.connect(user2).approve(hardhadMarketPlace.address, 50);
+    await hardhadMarketPlace.connect(user2)
+          .buyItem(0, 50, 0, hardhatERC721.address, user1.address, timeStamp
+    );
+
+    expect(await hardhatERC20.balanceOf(user1.address)).to.equal(50);
+    expect(await hardhatERC20.balanceOf(user2.address)).to.equal(50);
+    expect(await hardhatERC721.ownerOf(0)).to.equal(user2.address);
+  });
 });

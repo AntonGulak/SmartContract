@@ -107,7 +107,7 @@ contract MartketPlace is AccessControl {
         uint256 initPrice,
         uint256 minStep,
         address tokenAddr,
-        uint64 timestamp
+        uint256 timestamp
     ) external {
         bytes32 tokenHash = keccak256(
             abi.encodePacked(
@@ -129,7 +129,7 @@ contract MartketPlace is AccessControl {
         uint256 minStep,
         address tokenAddr,
         address owner,
-        uint64 timestamp
+        uint256 timestamp
     ) external {
         bytes32 tokenHash = keccak256(
             abi.encodePacked(
@@ -141,6 +141,7 @@ contract MartketPlace is AccessControl {
              owner, 
              timestamp)
         );
+        require(initPrice > 0, "Price must be greater than 0");
         IERC20(exchangeERC20Token).transferFrom(msg.sender, owner, initPrice);
         IERC721(tokenAddr).transferFrom(address(this), msg.sender, id);
         delete tokenInfo[tokenHash];
@@ -154,7 +155,7 @@ contract MartketPlace is AccessControl {
         uint256 minStep,
         address tokenAddr,
         address owner,
-        uint64 timestamp
+        uint256 timestamp
     ) external {
         bytes32 tokenHash = keccak256(
             abi.encodePacked(
@@ -166,6 +167,7 @@ contract MartketPlace is AccessControl {
              owner, 
              timestamp)
         );
+        require(initPrice > 0, "Price must be greater than 0");
         require(block.timestamp - timestamp < 2 weeks,
                 "Auction is finished"
         );   
@@ -196,7 +198,7 @@ contract MartketPlace is AccessControl {
         uint256 minStep,
         address tokenAddr,
         address owner,
-        uint64 timestamp
+        uint256 timestamp
     ) external {
         bytes32 tokenHash = keccak256(
             abi.encodePacked(
@@ -231,7 +233,7 @@ contract MartketPlace is AccessControl {
         uint256 minStep,
         address tokenAddr,
         address owner,
-        uint64 timestamp
+        uint256 timestamp
     ) external {
         bytes32 tokenHash = keccak256(
             abi.encodePacked(
