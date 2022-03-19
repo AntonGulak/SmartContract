@@ -110,11 +110,11 @@ describe("ERC721 contract", function () {
 
     let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
 
-    hardhatERC20.connect(user2).approve(hardhadMarketPlace.address, 50);
+    hardhatERC20.connect(user2).approve(hardhadMarketPlace.address, 100);
     await hardhadMarketPlace.connect(user2)
           .buyItem(0, 50, 0, hardhatERC721.address, user1.address, timeStamp
     );
-
+    
     expect(await hardhatERC20.balanceOf(user1.address)).to.equal(50);
     expect(await hardhatERC20.balanceOf(user2.address)).to.equal(amountERC20 - 50);
     expect(await hardhatERC721.ownerOf(0)).to.equal(user2.address);
@@ -130,8 +130,13 @@ describe("ERC721 contract", function () {
     expect((await hardhadMarketPlace.tokenInfo(hash)).currentPrice).to.equal(50);
 
     hardhatERC20.connect(user2).approve(hardhadMarketPlace.address, 1000);
+    await expect(hardhadMarketPlace.connect(user2)
+      .makeBid(70, 10, 50, 20, hardhatERC721.address, user1.address, timeStamp))
+      .to.be.revertedWith(
+      "Token does not exist"
+    );
     await hardhadMarketPlace.connect(user2)
-          .makeBid(70, 0, 50, 20, hardhatERC721.address, user1.address, timeStamp
+      .makeBid(70, 0, 50, 20, hardhatERC721.address, user1.address, timeStamp
     );
 
     expect(await hardhatERC20.balanceOf(user2.address)).to.equal(amountERC20 - 70);
@@ -191,6 +196,11 @@ describe("ERC721 contract", function () {
       .finishAuction(0, 50, 20, hardhatERC721.address, user1.address, timeStamp))
       .to.be.revertedWith(
       'Auction isn`t finished'
+    );
+    await expect(hardhadMarketPlace.connect(user3)
+      .finishAuction(10, 50, 20, hardhatERC721.address, user1.address, 0))
+      .to.be.revertedWith(
+      'Token does not exist'
     );
 
     await ethers.provider.send("evm_increaseTime", [2 * week + 1]);
@@ -261,6 +271,12 @@ describe("ERC721 contract", function () {
       .cancelAuction(0, 50, 20, hardhatERC721.address, user1.address, timeStamp))
       .to.be.revertedWith(
       'Auction isn`t finished'
+    );
+
+    await expect(hardhadMarketPlace.connect(user3)
+      .cancelAuction(10, 50, 20, hardhatERC721.address, user1.address, 0))
+      .to.be.revertedWith(
+      'Token does not exist'
     );
 
     await ethers.provider.send("evm_increaseTime", [2 * week + 1]);

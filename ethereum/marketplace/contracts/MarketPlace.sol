@@ -170,6 +170,7 @@ contract MartketPlace is AccessControl {
                 "Auction is finished"
         );   
         TokenCurrentInfo memory tokenCurrentInfo = tokenInfo[tokenHash];
+        require(tokenCurrentInfo.currentPrice > 0, "Token does not exist");
         require(amountBid >= tokenCurrentInfo.currentPrice + minStep,
                 "You bid is small"
         );
@@ -208,6 +209,7 @@ contract MartketPlace is AccessControl {
              timestamp)
         );
         TokenCurrentInfo memory tokenCurrentInfo = tokenInfo[tokenHash];
+        require(tokenCurrentInfo.currentPrice > 0, "Token does not exist");
         require(block.timestamp - timestamp > 2 weeks,
                 "Auction isn`t finished"
         );   
@@ -251,6 +253,7 @@ contract MartketPlace is AccessControl {
              timestamp)
         );
         TokenCurrentInfo memory tokenCurrentInfo = tokenInfo[tokenHash];
+        require(tokenCurrentInfo.currentPrice > 0, "Token does not exist");
         require(block.timestamp - timestamp > 2 weeks,
                 "Auction isn`t finished"
         );   
