@@ -62,12 +62,28 @@ describe("ERC721 contract", function () {
     expect(await hardhatERC721.ownerOf(0)).to.equal(hardhadMarketPlace.address);
 
     let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
-    
-    let hash = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode( 
-                  [ "uint256", "uint256", "uint256", "address", "bool", "address", "uint64"],
-                  [ 0, 50, 0, hardhatERC721.address, false, user1.address, timeStamp]));
+    let hash = await hardhadMarketPlace.getHash(0, 50, 0, hardhatERC721.address, false, user1.address, timeStamp);
 
-    console.log(hash);
+    expect((await hardhadMarketPlace.tokenInfo(hash)).currentPrice).to.equal(50);
+    expect((await hardhadMarketPlace.tokenInfo(hash)).lastBuyer).to.equal('0x0000000000000000000000000000000000000000');
+    expect((await hardhadMarketPlace.tokenInfo(hash)).bidsCounter).to.equal('0');
+  });
+
+  
+  it("listItemOnAuction check", async function () {
+    await hardhadMarketPlace.connect(owner).createItem("", user1.address);
+    await hardhatERC721.connect(user1).approve(hardhadMarketPlace.address, 0);
+    await hardhadMarketPlace.connect(user1).listItemOnAuction(0, 50, 20, hardhatERC721.address);
+
+    expect(await hardhatERC721.balanceOf(hardhadMarketPlace.address)).to.equal(1);
+    expect(await hardhatERC721.ownerOf(0)).to.equal(hardhadMarketPlace.address);
+
+    let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
+    let hash = await hardhadMarketPlace.getHash(0, 50, 20, hardhatERC721.address, true, user1.address, timeStamp);
+
+    expect((await hardhadMarketPlace.tokenInfo(hash)).currentPrice).to.equal(50);
+    expect((await hardhadMarketPlace.tokenInfo(hash)).lastBuyer).to.equal('0x0000000000000000000000000000000000000000');
+    expect((await hardhadMarketPlace.tokenInfo(hash)).bidsCounter).to.equal('0');
   });
 
 });

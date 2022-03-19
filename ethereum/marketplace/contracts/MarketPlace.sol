@@ -36,6 +36,28 @@ contract MartketPlace is AccessControl {
         ERC721Factory = _ERC721Factory;
     }
 
+     function getHash(
+        int256 id,
+        uint256 initPrice,
+        uint256 minStep,
+        address tokenAddr,
+        bool isAuction,
+        address owner,
+        uint256 timestamp
+     ) external pure returns(bytes32) {
+        bytes32 tokenHash = keccak256(
+            abi.encodePacked(
+            id,
+            initPrice,
+            minStep,
+            tokenAddr,
+            isAuction,
+            owner, 
+            timestamp)
+        );
+        return tokenHash;
+    }
+
     function createItem(string memory metadata, address owner) external {
         IERC721(ERC721Factory).mint(owner, metadata);
     }
@@ -77,7 +99,6 @@ contract MartketPlace is AccessControl {
             msg.sender, 
             block.timestamp)
         );
-        console.logBytes32(tokenHash);
         tokenInfo[tokenHash] = TokenCurrentInfo(initPrice, address(0), 0);
     }
 
