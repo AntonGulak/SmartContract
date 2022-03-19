@@ -251,7 +251,6 @@ describe("ERC721 contract", function () {
     await hardhadMarketPlace.connect(user2)
           .makeBid(70, 0, 50, 20, hardhatERC721.address, user1.address, timeStamp
     );
-
     await hardhatERC20.connect(user2).transfer(user3.address, 240);
     await hardhatERC20.connect(user3).approve(hardhadMarketPlace.address, 240);
     await hardhadMarketPlace.connect(user3)
@@ -269,7 +268,7 @@ describe("ERC721 contract", function () {
     await hardhadMarketPlace.connect(user3)
       .cancelAuction(0, 50, 20, hardhatERC721.address, user1.address, timeStamp
     )
-    
+
     expect(await hardhatERC721.ownerOf(0)).to.equal(user1.address);
     expect(await hardhatERC20.balanceOf(user3.address)).to.equal(240);
     expect(await hardhatERC20.balanceOf(user2.address)).to.equal(amountERC20 - (240));
