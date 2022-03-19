@@ -141,7 +141,6 @@ contract MartketPlace is AccessControl {
              owner, 
              timestamp)
         );
-        require(initPrice > 0, "Price must be greater than 0");
         IERC20(exchangeERC20Token).transferFrom(msg.sender, owner, initPrice);
         IERC721(tokenAddr).transferFrom(address(this), msg.sender, id);
         delete tokenInfo[tokenHash];
@@ -172,10 +171,15 @@ contract MartketPlace is AccessControl {
                 "Auction is finished"
         );   
         TokenCurrentInfo memory tokenCurrentInfo = tokenInfo[tokenHash];
-        require(amountBid > tokenCurrentInfo.currentPrice + minStep,
+        require(amountBid >= tokenCurrentInfo.currentPrice + minStep,
                 "You bid is small"
         );
         IERC20(exchangeERC20Token).transferFrom(msg.sender, address(this), amountBid);
+        tokenInfo[tokenHash] = TokenCurrentInfo(
+            amountBid,
+            msg.sender,
+            tokenCurrentInfo.bidsCounter + 1
+        );
         if (tokenCurrentInfo.lastBuyer != address(0)) {
             IERC20(exchangeERC20Token)
                 .transferFrom(
@@ -183,13 +187,8 @@ contract MartketPlace is AccessControl {
                     tokenCurrentInfo.lastBuyer,
                     tokenCurrentInfo.currentPrice
                 );
-        tokenInfo[tokenHash] = TokenCurrentInfo(
-            amountBid,
-            msg.sender,
-            tokenCurrentInfo.bidsCounter + 1
-        );
+        }
         emit Bid(amountBid, id, initPrice, minStep, tokenAddr, owner, true);
-      }
     }   
 
     function finishAuction(
