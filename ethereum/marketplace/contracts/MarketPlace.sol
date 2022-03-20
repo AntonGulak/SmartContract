@@ -141,6 +141,7 @@ contract MartketPlace is AccessControl {
              owner, 
              timestamp)
         );
+        require(tokenInfo[tokenHash].currentPrice > 0, "Token does not exist");
         IERC20(exchangeERC20Token).transferFrom(msg.sender, owner, initPrice);
         IERC721(tokenAddr).transferFrom(address(this), msg.sender, id);
         delete tokenInfo[tokenHash];
