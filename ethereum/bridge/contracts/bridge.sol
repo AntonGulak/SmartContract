@@ -12,13 +12,14 @@ contract Bridge is AccessControl {
 
     mapping (address => mapping (uint256 => address)) public ERC20Tokens;
     mapping(bytes32 => bool) public transactions;
-    // mapping(uint256 => bool) public blockChains;
 
     address public nodeValidator;
+    uint256 public currentBlockChainId;
     
-    constructor(address _nodeValidator) {
+    constructor(address _nodeValidator, uint256 _currentBlockChainId) {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         nodeValidator = _nodeValidator;
+        currentBlockChainId = _currentBlockChainId;
     }
 
     function includeToken(address tokenAddrFrom, address tokenAddTo, uint256 chainId) external onlyAdmin {
@@ -61,6 +62,7 @@ contract Bridge is AccessControl {
                 nonce
             )
         );
+
         require(ERC20Tokens[tokenAddress][chainId] != address(0), "You cannot use this token address");
   
         burnTokens(tokenAddress, msg.sender, amount);
@@ -78,20 +80,20 @@ contract Bridge is AccessControl {
     function redeem(
         address tokenAddress,
         uint256 amount,
-        uint256 chainId,
+        uint256 fromChainId,
         string memory symbol,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
     ) external {
-        require(ERC20Tokens[tokenAddress][chainId] != address(0), "You cannot use this token address");
+        require(ERC20Tokens[tokenAddress][fromChainId] != address(0), "You cannot use this token address");
         bytes32 msgHash = keccak256(
             abi.encodePacked(
                 tokenAddress,
                 msg.sender,
                 amount,
-                chainId,
+                currentBlockChainId,
                 symbol,
                 nonce
             )
@@ -100,7 +102,7 @@ contract Bridge is AccessControl {
         bytes32 ethMsgHash = getHashMessage(msgHash);
         require(checkSign(ethMsgHash, v, r, s), "Invalid signature");
         transactions[msgHash] = true;
-        IERC20(tokenAddress).mint(msg.sender, amount);
+        mintToken(tokenAddress, msg.sender, amount);
     }
 
     function getHashMessage(bytes32 message) internal pure returns (bytes32) {

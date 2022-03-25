@@ -1,8 +1,10 @@
 pragma solidity ^0.8.11;
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "hardhat/console.sol";
 
 contract ERC20 is AccessControl {
 
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     uint256 private totalTokens;
     string public name;
     string public symbol;
@@ -22,6 +24,10 @@ contract ERC20 is AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
         emit Transfer(address(0), msg.sender, _totalTokens);
+    }
+
+    function setupMinterRole(address account) external onlyAdmin {
+        _setupRole(MINTER_ROLE, account);
     }
 
     function balanceOf(address _owner) external view returns (uint256 balance) {
@@ -74,7 +80,7 @@ contract ERC20 is AccessControl {
         emit Transfer(msg.sender, address(0), _value);
     }
 
-    function mint(address _to, uint256 _value) external onlyAdmin {
+    function mint(address _to, uint256 _value) external onlyMinter {
 
         totalTokens = totalTokens + _value;
         balances[_to] = balances[_to] + _value;
@@ -86,6 +92,14 @@ contract ERC20 is AccessControl {
         require(
             hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
             "function only for admin"
+        );
+        _;
+    }
+
+    modifier onlyMinter() {
+        require(
+            hasRole(MINTER_ROLE, msg.sender),
+            "function only for minter"
         );
         _;
     }

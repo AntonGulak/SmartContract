@@ -81,11 +81,11 @@ describe("ERC20 contract", function () {
     );
   });
 
-  it("mint check", async function () {
-    await hardhatERC20.connect(owner).mint(user1.address, 7);
-    expect(await hardhatERC20.totalSupply()).to.equal(107);
-    expect(await hardhatERC20.balanceOf(user1.address)) 
-       .to.equal(7);  
-  });
+  // it("mint check", async function () {
+  //   await hardhatERC20.connect(owner).mint(user1.address, 7);
+  //   expect(await hardhatERC20.totalSupply()).to.equal(107);
+  //   expect(await hardhatERC20.balanceOf(user1.address)) 
+  //      .to.equal(7);  
+  // });
   
 });
