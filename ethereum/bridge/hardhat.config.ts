@@ -4,6 +4,7 @@ import '@nomiclabs/hardhat-ethers';
 import "@nomiclabs/hardhat-waffle";
 import "solidity-coverage";
 import * as dotenv from "dotenv";
+import "./tasks/bridge";
 
 dotenv.config();
 
