@@ -141,14 +141,16 @@ contract DAO is AccessControl {
         uint256 _totalSupply = totalSupply;
 
         proposalInfo[proposalHash] = ProposalCurrentInfo(0,0);
-
-        require(tokenAddrWithMinQuor.minQuorumPercentage < (votesSumm / _totalSupply) * 100,
-                "minimum quorum is not reached"
-        );
         
-        if (_proposalInfo.accepted > _proposalInfo.rejected) {
-            callBySignature(recipient, signature);
+        bool flag = true;
+        if (tokenAddrWithMinQuor.minQuorumPercentage > (votesSumm / _totalSupply) * 100) {
+             flag = false;
+        } else if (_proposalInfo.accepted <= _proposalInfo.rejected) {
+             flag = false;
+        } else {
+              callBySignature(recipient, signature);
         }
+        emit FinishProposal(recipient, signature, createTime, flag);
     }
 
     function callBySignature(address recipient, bytes memory signature) internal { 
@@ -185,5 +187,12 @@ contract DAO is AccessControl {
         bytes signature,
         uint256 createTime,
         address voter
+    );
+
+   event FinishProposal(
+        address indexed recipient,
+        bytes signature,
+        uint256 createTime,
+        bool result
     );
 }

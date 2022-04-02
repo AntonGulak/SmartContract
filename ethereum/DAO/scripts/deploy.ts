@@ -27,8 +27,9 @@ async function main() {
   
 }
 
-//0xBE4B0e76aab7b99F9b2F4a9aE25D343e1f0d9994
-//https://rinkeby.etherscan.io/address/0xBE4B0e76aab7b99F9b2F4a9aE25D343e1f0d9994#code
+// tokens deployed to: 0xe58670b31616d458620246214bb6A1fd5046C4A0
+// DAO deployed to: 0xAf4bc82dE34E095f77784F6c747FE8a388d16823
+// counter deployed to: 0x640dFF6dbeaaC90fC1A68C0ACcc7c5820D9e96FC
 
 main()
   .then(() => process.exit(0))
