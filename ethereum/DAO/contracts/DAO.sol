@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 contract DAO is AccessControl {
 
     struct ProposalCurrentInfo {
-        uint248 accepted;
-        uint248 rejected;
-        bool isActivated;
+        uint256 accepted;
+        uint256 rejected;
     }
+
     struct TokenAddrWithMinQuor {
         address tokensAddress;
         uint96 minQuorumPercentage;
@@ -18,9 +18,9 @@ contract DAO is AccessControl {
     bytes32 public constant CHAIRMAN_ROLE = keccak256("CHAIRMAN_ROLE");
 
     mapping (address => mapping (bytes32 => bool)) public isVoited;
-    mapping (bytes32 => ProposalCurrentInfo) public proposalInfo;
     mapping (address => uint256) public lastVotingTime;
-    mapping (address => uint248) public depositBalance;
+    mapping (address => uint256) public depositBalance;
+    mapping (bytes32 => ProposalCurrentInfo) private proposalInfo;
 
     TokenAddrWithMinQuor public tokenAddrWithMinQuor;
     uint256 public totalSupply;
@@ -41,7 +41,7 @@ contract DAO is AccessControl {
         _setupRole(CHAIRMAN_ROLE, msg.sender);
     }
 
-    function deposit(uint248 _amount) external {
+    function deposit(uint256 _amount) external {
         address _tokenAddress = tokenAddrWithMinQuor.tokensAddress; 
         require(IERC20(_tokenAddress).balanceOf(msg.sender) >=  _amount, 
                 "error balance"
@@ -82,7 +82,7 @@ contract DAO is AccessControl {
              signature,
              block.timestamp)
         );
-        proposalInfo[proposalHash] = ProposalCurrentInfo(0, 0, true);
+        proposalInfo[proposalHash] = ProposalCurrentInfo(1, 1);
         emit AddProposal(recipient, signature, description);
     }
 
@@ -128,6 +128,7 @@ contract DAO is AccessControl {
         require(block.timestamp - createTime > voitingTime,
                 "proposal isn't finished"
         );
+
         bytes32 proposalHash = keccak256(
             abi.encodePacked(
              recipient,
@@ -135,14 +136,11 @@ contract DAO is AccessControl {
              createTime)
         );
 
-        ProposalCurrentInfo memory _proposalInfo = proposalInfo[proposalHash];
+        ProposalCurrentInfo memory _proposalInfo = getProposalInfo(proposalHash);
         uint256 votesSumm = _proposalInfo.accepted + _proposalInfo.rejected;
         uint256 _totalSupply = totalSupply;
 
-        require(_proposalInfo.isActivated,
-                "proposal isn't activated"
-        );
-        proposalInfo[proposalHash].isActivated = false;
+        proposalInfo[proposalHash] = ProposalCurrentInfo(0,0);
 
         require(tokenAddrWithMinQuor.minQuorumPercentage < (votesSumm / _totalSupply) * 100,
                 "minimum quorum is not reached"
@@ -158,6 +156,15 @@ contract DAO is AccessControl {
                     signature
              );
         require(success, "ERROR call func");
+    }
+
+     function getProposalInfo(bytes32 proposalHash) 
+              public view returns(ProposalCurrentInfo memory)  {
+        ProposalCurrentInfo memory _proposalInfo = proposalInfo[proposalHash];
+          require(_proposalInfo.accepted > 0 && _proposalInfo.rejected > 0,
+                "proposal isn't activated"
+        );
+        return ProposalCurrentInfo(_proposalInfo.accepted - 1, _proposalInfo.rejected - 1);
     }
 
     event AddProposal(
