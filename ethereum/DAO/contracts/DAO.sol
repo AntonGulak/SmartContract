@@ -72,92 +72,90 @@ contract DAO is AccessControl {
         userInfo[msg.sender][DEPOSIT_BALANCE] = 0;
     }
 
-     function addProposal(address recipient, bytes memory signature, string memory description) external {
+     function addProposal(address _recipient, bytes memory _signature, string memory _description) external {
         require(hasRole(CHAIRMAN_ROLE, msg.sender),
                 "only for chairman"
         );
-        bytes32 proposalHash = keccak256(
+        bytes32 _proposalHash = keccak256(
             abi.encodePacked(
-             recipient,
-             signature,
+             _recipient,
+             _signature,
              block.timestamp)
         );
-        proposalInfo[proposalHash] = ProposalCurrentInfo(1, 1);
-        emit AddProposal(recipient, signature, description);
+        proposalInfo[_proposalHash] = ProposalCurrentInfo(1, 1);
+        emit AddProposal(_recipient, _signature, _description);
     }
 
-    function voting(address recipient, bytes memory signature, uint256 createTime, bool flag) external {
-        require(block.timestamp - createTime < settingsDAO.voitingTime,
+    function voting(address _recipient, bytes memory _signature, uint256 _createTime, bool _flag) external {
+        require(block.timestamp - _createTime < settingsDAO.voitingTime,
                 "proposal is finished"
         );   
-        bytes32 proposalHash = keccak256(
+        bytes32 _proposalHash = keccak256(
             abi.encodePacked(
-             recipient,
-             signature,
-             createTime)
+             _recipient,
+             _signature,
+             _createTime)
         );
-        require(userInfo[msg.sender][proposalHash] == 0,
+        require(userInfo[msg.sender][_proposalHash] == 0,
                 "you already voted"
         );
-        require(proposalInfo[proposalHash].accepted > 0,
+        require(proposalInfo[_proposalHash].accepted > 0,
                 "proposal isn't activated"
         );
-        userInfo[msg.sender][proposalHash] = 1;
+        userInfo[msg.sender][_proposalHash] = 1;
         userInfo[msg.sender][LAST_VOTING_TIME] = block.timestamp;
-        if (flag) {
-            unchecked{ proposalInfo[proposalHash].accepted += userInfo[msg.sender][DEPOSIT_BALANCE]; }
+        if (_flag) {
+            unchecked{ proposalInfo[_proposalHash].accepted += userInfo[msg.sender][DEPOSIT_BALANCE]; }
         } else {
-            unchecked{ proposalInfo[proposalHash].rejected += userInfo[msg.sender][DEPOSIT_BALANCE]; }
+            unchecked{ proposalInfo[_proposalHash].rejected += userInfo[msg.sender][DEPOSIT_BALANCE]; }
         }
-        emit Voting(recipient, signature, createTime, msg.sender, flag);
+        emit Voting(_recipient, _signature, _createTime, msg.sender, _flag);
     }
 
-    function finishProposal(address recipient, bytes memory signature, uint256 createTime) external {
-        require(block.timestamp - createTime > settingsDAO.voitingTime,
+    function finishProposal(address _recipient, bytes memory _signature, uint256 _createTime) external {
+        require(block.timestamp - _createTime > settingsDAO.voitingTime,
                 "proposal isn't finished"
         );
 
-        bytes32 proposalHash = keccak256(
+        bytes32 _proposalHash = keccak256(
             abi.encodePacked(
-             recipient,
-             signature,
-             createTime)
+             _recipient,
+             _signature,
+             _createTime)
         );
 
-        ProposalCurrentInfo memory _proposalInfo = proposalInfo[proposalHash];
+        ProposalCurrentInfo memory _proposalInfo = proposalInfo[_proposalHash];
         require(_proposalInfo.accepted > 0,
                 "proposal isn't activated"
         );
         _proposalInfo.accepted -= 1;
         _proposalInfo.rejected -= 1;
-        uint256 votesSumm = _proposalInfo.accepted + _proposalInfo.rejected;
-        uint256 _totalSupply = totalSupply;
-
-        proposalInfo[proposalHash] = ProposalCurrentInfo(0,0);
+        proposalInfo[_proposalHash] = ProposalCurrentInfo(0, 0);
         
-        bool flag;
+        bool _flag;
         if( (_proposalInfo.accepted == 0 
               || _proposalInfo.accepted > _proposalInfo.rejected
-            ) &&  settingsDAO.minQuorumPercentage < (votesSumm / _totalSupply) * 100
+            ) &&  settingsDAO.minQuorumPercentage 
+                  < ((_proposalInfo.accepted + _proposalInfo.rejected) / totalSupply) * 100
         ) {
-            callBySignature(recipient, signature);
-            flag = true;
+            callBySignature(_recipient, _signature);
+            _flag = true;
         }
         emit FinishProposal(
-            recipient,
-            signature,
-            createTime,
-            flag,
+            _recipient,
+            _signature,
+            _createTime,
+            _flag,
             _proposalInfo.accepted,
             _proposalInfo.rejected
         );
     }
 
-    function callBySignature(address recipient, bytes memory signature) internal { 
-        (bool success, ) = recipient.call{value: 0}(
-                    signature
+    function callBySignature(address _recipient, bytes memory _signature) internal { 
+        (bool _success, ) = _recipient.call{value: 0}(
+                    _signature
              );
-        require(success, "ERROR call func");
+        require(_success, "ERROR call func");
     }
 
     event AddProposal(
