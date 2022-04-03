@@ -99,15 +99,15 @@ contract DAO is AccessControl {
         require(userInfo[msg.sender][proposalHash] == 0,
                 "you already voted"
         );
-        require(_proposalInfo.accepted > 0,
+        require(proposalInfo[proposalHash].accepted > 0,
                 "proposal isn't activated"
         );
         userInfo[msg.sender][proposalHash] = 1;
         userInfo[msg.sender][LAST_VOTING_TIME] = block.timestamp;
         if (flag) {
-            proposalInfo[proposalHash].accepted += userInfo[msg.sender][DEPOSIT_BALANCE];
+            unchecked{ proposalInfo[proposalHash].accepted += userInfo[msg.sender][DEPOSIT_BALANCE]; }
         } else {
-            proposalInfo[proposalHash].rejected += userInfo[msg.sender][DEPOSIT_BALANCE];
+            unchecked{ proposalInfo[proposalHash].rejected += userInfo[msg.sender][DEPOSIT_BALANCE]; }
         }
         emit Voting(recipient, signature, createTime, msg.sender, flag);
     }
@@ -135,14 +135,25 @@ contract DAO is AccessControl {
         proposalInfo[proposalHash] = ProposalCurrentInfo(0,0);
         
         bool flag = true;
-        if (settingsDAO.minQuorumPercentage > (votesSumm / _totalSupply) * 100) {
+        if (_proposalInfo.accepted == 0) {
+            callBySignature(recipient, signature);
+        } else if (_proposalInfo.rejected == 0) {
+            flag = false;
+        } else if (settingsDAO.minQuorumPercentage > (votesSumm / _totalSupply) * 100) {
              flag = false;
         } else if (_proposalInfo.accepted <= _proposalInfo.rejected) {
              flag = false;
         } else {
               callBySignature(recipient, signature);
         }
-        emit FinishProposal(recipient, signature, createTime, flag);
+        emit FinishProposal(
+            recipient,
+            signature,
+            createTime,
+            flag,
+            _proposalInfo.accepted - 1,
+            _proposalInfo.rejected -1
+            );
     }
 
     function callBySignature(address recipient, bytes memory signature) internal { 
@@ -170,6 +181,8 @@ contract DAO is AccessControl {
         address indexed recipient,
         bytes signature,
         uint256 createTime,
-        bool result
+        bool result,
+        uint256 accepted,
+        uint256 rejected
     );
 }
