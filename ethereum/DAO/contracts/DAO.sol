@@ -1,5 +1,4 @@
 pragma solidity >= 0.8.11;
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
@@ -10,39 +9,39 @@ contract DAO is AccessControl {
         uint256 rejected;
     }
 
-    struct TokenAddrWithMinQuor {
+    struct SettingsDAO {
         address tokensAddress;
-        uint96 minQuorumPercentage;
+        uint88 voitingTime;
+        uint8 minQuorumPercentage;
     }
 
     bytes32 public constant CHAIRMAN_ROLE = keccak256("CHAIRMAN_ROLE");
+    bytes32 public constant DEPOSIT_BALANCE = keccak256("DEPOSIT_BALANCE");
+    bytes32 public constant LAST_VOTING_TIME = keccak256("LAST_VOTING_TIME");
 
-    mapping (address => mapping (bytes32 => bool)) public isVoited;
-    mapping (address => uint256) public lastVotingTime;
-    mapping (address => uint256) public depositBalance;
-    mapping (bytes32 => ProposalCurrentInfo) private proposalInfo;
+    mapping (bytes32 => ProposalCurrentInfo) public proposalInfo;
+    mapping (address => mapping (bytes32 => uint256)) public userInfo;
 
-    TokenAddrWithMinQuor public tokenAddrWithMinQuor;
     uint256 public totalSupply;
-    uint256 public voitingTime;
+    SettingsDAO public settingsDAO;
 
     constructor(
         address _tokensAddress,
-        uint256 _voitingTime,
-        uint96 _minQuorumPercentage
+        uint88 _voitingTime,
+        uint8 _minQuorumPercentage
     ) public {
-        require(_minQuorumPercentage <  100,
-                "percentage must be less than 100");
-        tokenAddrWithMinQuor = TokenAddrWithMinQuor (
+        require(_minQuorumPercentage <=  100,
+                "percentage must be less than or equal to 100");
+        settingsDAO = SettingsDAO (
             _tokensAddress,
+            _voitingTime,
             _minQuorumPercentage
         );
-        voitingTime = _voitingTime;
         _setupRole(CHAIRMAN_ROLE, msg.sender);
     }
 
     function deposit(uint256 _amount) external {
-        address _tokenAddress = tokenAddrWithMinQuor.tokensAddress; 
+        address _tokenAddress = settingsDAO.tokensAddress; 
         require(IERC20(_tokenAddress).balanceOf(msg.sender) >=  _amount, 
                 "error balance"
         );
@@ -55,21 +54,22 @@ contract DAO is AccessControl {
             address(this),
             _amount
         );
-        depositBalance[msg.sender] += _amount;
+        userInfo[msg.sender][DEPOSIT_BALANCE] += _amount;
         totalSupply += _amount;
     }
 
     function withdrawDeposit() external {
-        uint256 _depositBalance = depositBalance[msg.sender];
+        uint256 _depositBalance = userInfo[msg.sender][DEPOSIT_BALANCE];
         require(_depositBalance >  0,
                 "you don`t have tokens on balance"
         );
-        require(block.timestamp - lastVotingTime[msg.sender] > voitingTime,
+        require(block.timestamp - userInfo[msg.sender][LAST_VOTING_TIME] 
+                    > settingsDAO.voitingTime,
                 "you don`t have rights to withdraw deposit"
         );
-        IERC20(tokenAddrWithMinQuor.tokensAddress).transfer(msg.sender, _depositBalance);
-        totalSupply -= depositBalance[msg.sender];
-        depositBalance[msg.sender] = 0;
+        IERC20(settingsDAO.tokensAddress).transfer(msg.sender, _depositBalance);
+        totalSupply -= userInfo[msg.sender][DEPOSIT_BALANCE];
+        userInfo[msg.sender][DEPOSIT_BALANCE] = 0;
     }
 
      function addProposal(address recipient, bytes memory signature, string memory description) external {
@@ -86,8 +86,8 @@ contract DAO is AccessControl {
         emit AddProposal(recipient, signature, description);
     }
 
-    function accept(address recipient, bytes memory signature, uint256 createTime) external {
-        require(block.timestamp - createTime < voitingTime,
+    function voting(address recipient, bytes memory signature, uint256 createTime, bool flag) external {
+        require(block.timestamp - createTime < settingsDAO.voitingTime,
                 "proposal is finished"
         );   
         bytes32 proposalHash = keccak256(
@@ -96,36 +96,21 @@ contract DAO is AccessControl {
              signature,
              createTime)
         );
-        require(!isVoited[msg.sender][proposalHash],
+        require(userInfo[msg.sender][proposalHash] == 0,
                 "you already voted"
         );
-        isVoited[msg.sender][proposalHash] = true;
-        lastVotingTime[msg.sender] = block.timestamp;
-        proposalInfo[proposalHash].accepted += depositBalance[msg.sender];
-        emit Accept(recipient, signature, createTime, msg.sender);
-    }
-
-    function reject(address recipient, bytes memory signature, uint256 createTime) external {
-        require(block.timestamp - createTime < voitingTime,
-                "proposal is finished"
-        );   
-        bytes32 proposalHash = keccak256(
-            abi.encodePacked(
-             recipient,
-             signature,
-             createTime)
-        );
-        require(!isVoited[msg.sender][proposalHash],
-                "you already voted"
-        );
-        isVoited[msg.sender][proposalHash] = true;
-        lastVotingTime[msg.sender] = block.timestamp;
-        proposalInfo[proposalHash].rejected += depositBalance[msg.sender];
-        emit Reject(recipient, signature, createTime, msg.sender);
+        userInfo[msg.sender][proposalHash] = 1;
+        userInfo[msg.sender][LAST_VOTING_TIME] = block.timestamp;
+        if (flag) {
+            proposalInfo[proposalHash].accepted += userInfo[msg.sender][DEPOSIT_BALANCE];
+        } else {
+            proposalInfo[proposalHash].rejected += userInfo[msg.sender][DEPOSIT_BALANCE];
+        }
+        emit Voting(recipient, signature, createTime, msg.sender, flag);
     }
 
     function finishProposal(address recipient, bytes memory signature, uint256 createTime) external {
-        require(block.timestamp - createTime > voitingTime,
+        require(block.timestamp - createTime > settingsDAO.voitingTime,
                 "proposal isn't finished"
         );
 
@@ -136,14 +121,18 @@ contract DAO is AccessControl {
              createTime)
         );
 
-        ProposalCurrentInfo memory _proposalInfo = getProposalInfo(proposalHash);
-        uint256 votesSumm = _proposalInfo.accepted + _proposalInfo.rejected;
+        ProposalCurrentInfo memory _proposalInfo = proposalInfo[proposalHash];
+        require(_proposalInfo.accepted > 0 && _proposalInfo.rejected > 0,
+                "proposal isn't activated"
+        );
+        // -2 from addProposal
+        uint256 votesSumm = _proposalInfo.accepted + _proposalInfo.rejected - 2;
         uint256 _totalSupply = totalSupply;
 
         proposalInfo[proposalHash] = ProposalCurrentInfo(0,0);
         
         bool flag = true;
-        if (tokenAddrWithMinQuor.minQuorumPercentage > (votesSumm / _totalSupply) * 100) {
+        if (settingsDAO.minQuorumPercentage > (votesSumm / _totalSupply) * 100) {
              flag = false;
         } else if (_proposalInfo.accepted <= _proposalInfo.rejected) {
              flag = false;
@@ -160,33 +149,18 @@ contract DAO is AccessControl {
         require(success, "ERROR call func");
     }
 
-     function getProposalInfo(bytes32 proposalHash) 
-              public view returns(ProposalCurrentInfo memory)  {
-        ProposalCurrentInfo memory _proposalInfo = proposalInfo[proposalHash];
-          require(_proposalInfo.accepted > 0 && _proposalInfo.rejected > 0,
-                "proposal isn't activated"
-        );
-        return ProposalCurrentInfo(_proposalInfo.accepted - 1, _proposalInfo.rejected - 1);
-    }
-
     event AddProposal(
         address indexed recipient,
         bytes signature,
         string description
     );
 
-    event Accept(
+    event Voting(
         address indexed recipient,
         bytes signature,
         uint256 createTime,
-        address voter
-    );
-
-    event Reject(
-        address indexed recipient,
-        bytes signature,
-        uint256 createTime,
-        address voter
+        address voter,
+        bool flag
     );
 
    event FinishProposal(
