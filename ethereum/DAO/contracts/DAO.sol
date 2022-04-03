@@ -99,6 +99,9 @@ contract DAO is AccessControl {
         require(userInfo[msg.sender][proposalHash] == 0,
                 "you already voted"
         );
+        require(_proposalInfo.accepted > 0,
+                "proposal isn't activated"
+        );
         userInfo[msg.sender][proposalHash] = 1;
         userInfo[msg.sender][LAST_VOTING_TIME] = block.timestamp;
         if (flag) {
@@ -122,7 +125,7 @@ contract DAO is AccessControl {
         );
 
         ProposalCurrentInfo memory _proposalInfo = proposalInfo[proposalHash];
-        require(_proposalInfo.accepted > 0 && _proposalInfo.rejected > 0,
+        require(_proposalInfo.accepted > 0,
                 "proposal isn't activated"
         );
         // -2 from addProposal
