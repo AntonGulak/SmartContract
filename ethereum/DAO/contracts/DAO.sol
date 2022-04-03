@@ -134,25 +134,22 @@ contract DAO is AccessControl {
 
         proposalInfo[proposalHash] = ProposalCurrentInfo(0,0);
         
-        bool flag = true;
-        if (_proposalInfo.accepted == 0) {
+        bool flag;
+        if( (_proposalInfo.accepted == 0 
+              || _proposalInfo.accepted > _proposalInfo.rejected
+            ) &&  settingsDAO.minQuorumPercentage < (votesSumm / _totalSupply) * 100
+        ) {
             callBySignature(recipient, signature);
-        } else if (_proposalInfo.rejected == 0) {
-            flag = false;
-        } else if (settingsDAO.minQuorumPercentage > (votesSumm / _totalSupply) * 100) {
-             flag = false;
-        } else if (_proposalInfo.accepted <= _proposalInfo.rejected) {
-             flag = false;
-        } else {
-              callBySignature(recipient, signature);
+            flag = true;
         }
+
         emit FinishProposal(
             recipient,
             signature,
             createTime,
             flag,
             _proposalInfo.accepted - 1,
-            _proposalInfo.rejected -1
+            _proposalInfo.rejected - 1
             );
     }
 
