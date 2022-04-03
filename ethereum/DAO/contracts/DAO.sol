@@ -128,8 +128,9 @@ contract DAO is AccessControl {
         require(_proposalInfo.accepted > 0,
                 "proposal isn't activated"
         );
-        // -2 from addProposal
-        uint256 votesSumm = _proposalInfo.accepted + _proposalInfo.rejected - 2;
+        _proposalInfo.accepted -= 1;
+        _proposalInfo.rejected -= 1;
+        uint256 votesSumm = _proposalInfo.accepted + _proposalInfo.rejected;
         uint256 _totalSupply = totalSupply;
 
         proposalInfo[proposalHash] = ProposalCurrentInfo(0,0);
@@ -142,15 +143,14 @@ contract DAO is AccessControl {
             callBySignature(recipient, signature);
             flag = true;
         }
-
         emit FinishProposal(
             recipient,
             signature,
             createTime,
             flag,
-            _proposalInfo.accepted - 1,
-            _proposalInfo.rejected - 1
-            );
+            _proposalInfo.accepted,
+            _proposalInfo.rejected
+        );
     }
 
     function callBySignature(address recipient, bytes memory signature) internal { 
