@@ -105,9 +105,9 @@ contract DAO is AccessControl {
         userInfo[msg.sender][_proposalHash] = 1;
         userInfo[msg.sender][LAST_VOTING_TIME] = block.timestamp;
         if (_flag) {
-            unchecked{ proposalInfo[_proposalHash].accepted += userInfo[msg.sender][DEPOSIT_BALANCE]; }
+            proposalInfo[_proposalHash].accepted += userInfo[msg.sender][DEPOSIT_BALANCE];
         } else {
-            unchecked{ proposalInfo[_proposalHash].rejected += userInfo[msg.sender][DEPOSIT_BALANCE]; }
+            proposalInfo[_proposalHash].rejected += userInfo[msg.sender][DEPOSIT_BALANCE];
         }
         emit Voting(_recipient, _signature, _createTime, msg.sender, _flag);
     }
@@ -133,8 +133,7 @@ contract DAO is AccessControl {
         proposalInfo[_proposalHash] = ProposalCurrentInfo(0, 0);
         
         bool _flag;
-        if( (_proposalInfo.accepted == 0 
-              || _proposalInfo.accepted > _proposalInfo.rejected
+        if( (_proposalInfo.accepted > _proposalInfo.rejected
             ) &&  settingsDAO.minQuorumPercentage 
                   < ((_proposalInfo.accepted + _proposalInfo.rejected) / totalSupply) * 100
         ) {
