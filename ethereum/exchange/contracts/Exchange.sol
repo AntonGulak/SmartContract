@@ -71,22 +71,58 @@ contract Exchange is AccessControl, ReentrancyGuard {
                 "A sale round is finished"
         );
         require(_tokenAndRound.startTime % 2 == 0, 
-                "Is not a sale round"
+                "It is not a sale round"
         );
-        IERC20(_tokenAndRound.addr).transfer(msg.sender, msg.value / tokenPrice);
+        uint256 amountTokens = msg.value / tokenPrice;
+        IERC20(_tokenAndRound.addr).transfer(msg.sender, amountTokens);
+        uint256 trueValue = tokenPrice * amountTokens;
         address firstRefferal = referrals[msg.sender];
         if (firstRefferal != address(0)) {
             firstRefferal.call{
-                value: (msg.value * 5) / 100
+                value: (trueValue * 5) / 100
             }("Percentage of first referer");
         }
         address secondRefferal = referrals[firstRefferal];
         if (secondRefferal != address(0)) {
              secondRefferal.call{
-                value: (msg.value * 3) / 100
+                value: (trueValue * 3) / 100
           }("Percentage of second referer");
         }
     }
+
+    function buyTokenOnTradeRound(address payable seller) external payable nonReentrant {
+        TokenAndRound memory _tokenAndRound = tokenAndRound;
+        TokenOffer memory _tokenOffer = tokenOfferByUsers[seller];
+
+        require(uint96(block.timestamp) - _tokenAndRound.startTime < roundTime, 
+                "A trade round is finished"
+        );
+        require(_tokenAndRound.startTime % 2 == 1, 
+                "It is not a trade round"
+        );
+        uint256 amountTokens = msg.value / _tokenOffer.price;
+        if(_tokenOffer.amount > amountTokens) {
+            amountTokens = _tokenOffer.amount;
+        }
+        uint256 trueValue = amountTokens * _tokenOffer.price;
+        IERC20(_tokenAndRound.addr).transfer(msg.sender, amountTokens);
+        seller.call{
+                value: (trueValue * 95) / 100
+        }("");
+        
+        address firstRefferal = referrals[seller];
+        if (firstRefferal != address(0)) {
+            firstRefferal.call{
+                value: (msg.value * 25) / 1000
+            }("Percentage of first referer");
+        }
+        address secondRefferal = referrals[firstRefferal];
+        if (secondRefferal != address(0)) {
+             secondRefferal.call{
+                value: (msg.value * 25) / 1000
+          }("Percentage of second referer");
+        }
+    } 
 
     function placeTokens(uint256 _amount, uint256 _price) external  {
         IERC20(tokenAndRound.addr).transferFrom(
