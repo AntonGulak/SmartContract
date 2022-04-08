@@ -35,7 +35,6 @@ contract Exchange is AccessControl, ReentrancyGuard {
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        uint96 time = uint96(block.timestamp);
     }
 
     function startTradeRound() external {
