@@ -125,9 +125,9 @@ describe("exchange contract", function () {
     await exchange.connect(user2).startTradeRound();
     expect(await contractACDM.balanceOf(exchange.address)).to.equal(0);
 
-    const blockNumAfter = await ethers.provider.getBlockNumber();
-    const blockAfter = await ethers.provider.getBlock(blockNumAfter);
-    const timeStamp = await blockAfter.timestamp;
+    let blockNumAfter = await ethers.provider.getBlockNumber();
+    let blockAfter = await ethers.provider.getBlock(blockNumAfter);
+    let timeStamp = await blockAfter.timestamp;
     expect((await exchange.tokenAndRound()).startTime).to.equal(timeStamp | 1);
     await ethers.provider.send("evm_increaseTime", [3 * day + 1]);
     await ethers.provider.send("evm_mine", []);
@@ -137,9 +137,51 @@ describe("exchange contract", function () {
       .to.be.revertedWith(
       "You should start the trade round"
     );
-    await exchange.connect(user2).startTradeRound();
+    await exchange.connect(user1).startTradeRound();
+    await expect(exchange.connect(user2)
+      .buyTokenOnSaleRound({ value: ethers.utils.parseUnits("1", 16)}))
+      .to.be.revertedWith(
+      "It is not a sale round"
+    );
+    await contractACDM.connect(user1).approve(exchange.address, 1000);
+    await exchange.connect(user1).placeTokens(1000, ethers.utils.parseUnits("5", 13))
+    await exchange.connect(user3).buyTokenOnTradeRound( user1.address, { value: ethers.utils.parseUnits("2.5", 16)});
+    await expect(exchange.connect(user2)
+      .finishSaleRoundPrematurely())
+      .to.be.revertedWith(
+      "It's not the sale round"
+    );
+    await ethers.provider.send("evm_increaseTime", [3 * day + 1]);
+    await ethers.provider.send("evm_mine", []);
+    await expect(exchange.connect(user2)
+      .startTradeRound())
+      .to.be.revertedWith(
+      "You should start the sale round"
+    );
+    await exchange.connect(user2).startSaleRound();
+    expect(await contractACDM.balanceOf(user1.address)).to.equal(500);
+    expect(await contractACDM.balanceOf(user3.address)).to.equal(500);
+    expect(await contractACDM.balanceOf(user2.address)).to.equal(0);
   });
 
+  it("startSaleRound check", async function () {
+    await exchange.connect(user1).buyTokenOnSaleRound({
+      value: ethers.utils.parseUnits("1", 16)
+    });
+    await ethers.provider.send("evm_increaseTime", [3 * day + 1]);
+    await ethers.provider.send("evm_mine", []);
+  
+    await exchange.connect(user1).startTradeRound();
+    await contractACDM.connect(user1).approve(exchange.address, 1000);
+    await exchange.connect(user1).placeTokens(1000, ethers.utils.parseUnits("5", 13))
+    await exchange.connect(user3).buyTokenOnTradeRound( user1.address, { value: ethers.utils.parseUnits("2.5", 16)});
+      
+    await ethers.provider.send("evm_increaseTime", [3 * day + 1]);
+    await ethers.provider.send("evm_mine", []);
+    await exchange.connect(user2).startSaleRound();
+    expect(await exchange.totalSales()).to.equal(0);
+  });
+  
   it("placeTokens check", async function () {
     await exchange.connect(user3).buyTokenOnSaleRound({
       value: ethers.utils.parseUnits("1", 16)
@@ -197,10 +239,12 @@ describe("exchange contract", function () {
   });
 
 
-  it("finishSaleRoundPrematurely check", async function () {
-    await exchange.connect(user1).buyTokenOnSaleRound({
-      value: ethers.utils.parseUnits("1", 18)
-    });
-
+  it("withdrawByAdmin check", async function () {
+    await expect(exchange.connect(user1)
+      .withdrawByAdmin(user1.address))
+      .to.be.revertedWith(
+      "function only for admin"
+    );
+    await exchange.connect(crypton).withdrawByAdmin(crypton.address);
   });
 });

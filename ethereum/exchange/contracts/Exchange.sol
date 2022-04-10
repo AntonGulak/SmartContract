@@ -25,9 +25,11 @@ contract Exchange is AccessControl, ReentrancyGuard {
        uint256 price;
     }
 
-    TokenAndRound public tokenAndRound;
     mapping (address => address) public referrals;
     mapping (address => TokenOffer) public tokenOfferByUsers;
+
+    address[] public currentSellers;
+    TokenAndRound public tokenAndRound;
 
     uint256 public totalSales;
     uint256 public tokenPrice;
@@ -57,6 +59,14 @@ contract Exchange is AccessControl, ReentrancyGuard {
         require(totalSales > 0, 
                 "You should start the trade round"
         );
+        address[] memory _currentSellers = currentSellers;
+        for(uint i = 0; i < _currentSellers.length; i++) {
+            IERC20(_tokenAndRound.addr).transfer(_currentSellers[i], 
+                                                tokenOfferByUsers[_currentSellers[i]].amount
+            );
+            delete tokenOfferByUsers[_currentSellers[i]];
+        }
+        delete currentSellers;
         tokenPrice = (tokenPrice * 103) / 100 + 4 * 10**12;
         uint256 tokenAmount = totalSales / tokenPrice;
         totalSales = 0;
@@ -104,6 +114,7 @@ contract Exchange is AccessControl, ReentrancyGuard {
             amountTokens = _tokenOffer.amount;
         }
         tokenOfferByUsers[seller].amount -= amountTokens;
+        totalSales += amountTokens;
         uint256 trueValue = amountTokens * _tokenOffer.price;
         IERC20(_tokenAndRound.addr).transfer(msg.sender, amountTokens);
         seller.call{
@@ -128,21 +139,20 @@ contract Exchange is AccessControl, ReentrancyGuard {
         require(tokenAndRound.startTime % 2 == 1, 
                 "It is not a trade round"
         );
+        require(_amount > 0 && _price > 0, 
+                "Incorrect values"
+        );
         IERC20(tokenAndRound.addr).transferFrom(
             msg.sender,
             address(this),
             _amount
         );
+        if (tokenOfferByUsers[msg.sender].amount == 0) {
+            currentSellers.push(msg.sender);
+        }
         tokenOfferByUsers[msg.sender].amount += _amount;
         tokenOfferByUsers[msg.sender].price = _price;
     }
-
-    function unplaceTokens() external {
-        uint256 balance = tokenOfferByUsers[msg.sender].amount;
-        tokenOfferByUsers[msg.sender] = TokenOffer(0,0);
-        IERC20(tokenAndRound.addr).transfer(msg.sender, balance);
-    }
-
 
     function finishSaleRoundPrematurely() external {
         require(tokenAndRound.startTime % 2 == 0, 
@@ -151,7 +161,6 @@ contract Exchange is AccessControl, ReentrancyGuard {
         require(IERC20(tokenAndRound.addr).balanceOf(address(this)) == 0, 
                 "You can not finish the sale round"
         );
-
         tokenAndRound.startTime = 1;
     }
 
@@ -168,21 +177,13 @@ contract Exchange is AccessControl, ReentrancyGuard {
                 "Token factory are already registered"
         );
         tokenAndRound.addr = _tokenFactory;
-        mintToken(_amount);
+         IERC20(_tokenFactory).mint(address(this), _amount);
         tokenPrice = _initCost / _amount;
         tokenAndRound.startTime = uint96(block.timestamp) + (uint96(block.timestamp) & 1);
     }
 
-    function mintToken(uint256 amount) internal {
-        IERC20(tokenAndRound.addr).mint(address(this), amount);
-    }
-
-    function burnTokens(uint256 amount) internal {
-        IERC20(tokenAndRound.addr).burn(amount);
-    }
-
-    function withdrawByAdmin(address payable destination, uint256 amount) external onlyAdmin {
-        (bool success,) = destination.call{value: amount}("");
+    function withdrawByAdmin(address payable destination) external onlyAdmin {
+        (bool success,) = destination.call{value: address(this).balance}("");
         require(success, "Failed to send money");
     }
 
