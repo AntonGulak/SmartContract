@@ -103,6 +103,7 @@ contract Exchange is AccessControl, ReentrancyGuard {
         if(amountTokens  > _tokenOffer.amount) {
             amountTokens = _tokenOffer.amount;
         }
+        tokenOfferByUsers[seller].amount -= amountTokens;
         uint256 trueValue = amountTokens * _tokenOffer.price;
         IERC20(_tokenAndRound.addr).transfer(msg.sender, amountTokens);
         seller.call{
