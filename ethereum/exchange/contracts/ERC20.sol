@@ -20,7 +20,7 @@ contract ERC20 is AccessControl {
                  address minterRole) {
         _setupRole(MINTER_ROLE, minterRole);
         name = _name_;
-        symbol = _symbol;  
+        symbol = _symbol; 
     }
 
     function balanceOf(address _owner) external view returns (uint256 balance) {

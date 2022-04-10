@@ -25,13 +25,13 @@ contract Exchange is AccessControl, ReentrancyGuard {
        uint256 price;
     }
 
-    TokenAndRound tokenAndRound;
+    TokenAndRound public tokenAndRound;
     mapping (address => address) public referrals;
     mapping (address => TokenOffer) public tokenOfferByUsers;
 
-    uint256 totalSales;
-    uint256 tokenPrice;
-    uint256 constant roundTime = 3 days;
+    uint256 public totalSales;
+    uint256 public tokenPrice;
+    uint256 constant public roundTime = 3 days;
 
     constructor() {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -64,7 +64,7 @@ contract Exchange is AccessControl, ReentrancyGuard {
         tokenAndRound.startTime = uint96(block.timestamp) + (uint96(block.timestamp) & 1);
     }
 
-      function buyTokenOnSaleRound(uint256 amount) external payable nonReentrant {
+      function buyTokenOnSaleRound() external payable nonReentrant {
         TokenAndRound memory _tokenAndRound = tokenAndRound;
         require(uint96(block.timestamp) - _tokenAndRound.startTime < roundTime, 
                 "A sale round is finished"
@@ -100,7 +100,7 @@ contract Exchange is AccessControl, ReentrancyGuard {
                 "It is not a trade round"
         );
         uint256 amountTokens = msg.value / _tokenOffer.price;
-        if(_tokenOffer.amount > amountTokens) {
+        if(amountTokens  > _tokenOffer.amount) {
             amountTokens = _tokenOffer.amount;
         }
         uint256 trueValue = amountTokens * _tokenOffer.price;
@@ -124,6 +124,9 @@ contract Exchange is AccessControl, ReentrancyGuard {
     } 
 
     function placeTokens(uint256 _amount, uint256 _price) external  {
+        require(tokenAndRound.startTime % 2 == 1, 
+                "It is not a trade round"
+        );
         IERC20(tokenAndRound.addr).transferFrom(
             msg.sender,
             address(this),
@@ -153,24 +156,24 @@ contract Exchange is AccessControl, ReentrancyGuard {
 
 
     function register(address inviter) external {
-        require(referrals[msg.sender] != address(0), 
+        require(referrals[msg.sender] == address(0), 
                 "You are already registered"
         );
         referrals[msg.sender] = inviter;
     }
 
-    function registerTokenFactory(address _tokenFactory) external onlyAdmin {
+    function registerTokenFactory(address _tokenFactory, uint256 _amount, uint256 _initCost) external onlyAdmin {
         require(tokenAndRound.startTime == 0, 
                 "Token factory are already registered"
         );
         tokenAndRound.addr = _tokenFactory;
-        mintToken(10**5);
-        tokenPrice = 1 ether / 10**5;
+        mintToken(_amount);
+        tokenPrice = _initCost / _amount;
         tokenAndRound.startTime = uint96(block.timestamp) + (uint96(block.timestamp) & 1);
     }
 
     function mintToken(uint256 amount) internal {
-        IERC20(tokenAndRound.addr).mint(msg.sender, amount);
+        IERC20(tokenAndRound.addr).mint(address(this), amount);
     }
 
     function burnTokens(uint256 amount) internal {
