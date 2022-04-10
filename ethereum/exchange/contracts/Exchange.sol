@@ -47,9 +47,9 @@ contract Exchange is AccessControl, ReentrancyGuard {
         require(totalSales == 0, 
                 "You should start the sale round"
         );
+        tokenAndRound.startTime = uint96(block.timestamp) | 1;
         uint256 _currentBalance = IERC20(_tokenAndRound.addr).balanceOf(address(this));
         IERC20(_tokenAndRound.addr).burn(_currentBalance);
-        tokenAndRound.startTime = uint96(block.timestamp) | 1;
     }
      function startSaleRound() external {
         TokenAndRound memory _tokenAndRound = tokenAndRound;
@@ -59,7 +59,13 @@ contract Exchange is AccessControl, ReentrancyGuard {
         require(totalSales > 0, 
                 "You should start the trade round"
         );
+        tokenAndRound.startTime = uint96(block.timestamp) + (uint96(block.timestamp) & 1);
+        tokenPrice = (tokenPrice * 103) / 100 + 4 * 10**12;
+        uint256 _tokenAmount = totalSales / tokenPrice;
+        totalSales = 0;
+        IERC20(_tokenAndRound.addr).mint(address(this), _tokenAmount);
         address[] memory _currentSellers = currentSellers;
+
         for(uint i = 0; i < _currentSellers.length; i++) {
             IERC20(_tokenAndRound.addr).transfer(_currentSellers[i], 
                                                 tokenOfferByUsers[_currentSellers[i]].amount
@@ -67,11 +73,6 @@ contract Exchange is AccessControl, ReentrancyGuard {
             delete tokenOfferByUsers[_currentSellers[i]];
         }
         delete currentSellers;
-        tokenPrice = (tokenPrice * 103) / 100 + 4 * 10**12;
-        uint256 _tokenAmount = totalSales / tokenPrice;
-        totalSales = 0;
-        IERC20(_tokenAndRound.addr).mint(address(this), _tokenAmount);
-        tokenAndRound.startTime = uint96(block.timestamp) + (uint96(block.timestamp) & 1);
     }
 
       function buyTokenOnSaleRound() external payable nonReentrant {
