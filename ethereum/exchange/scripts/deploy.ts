@@ -13,6 +13,8 @@ async function main() {
   console.log(ERC20.address);
 }
 
+//0xAE5423f0FCa253bc036F25115B71Cf377474D407
+
 main()
   .then(() => process.exit(0))
   .catch((error) => {

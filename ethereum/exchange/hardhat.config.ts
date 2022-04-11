@@ -1,9 +1,11 @@
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig, task } from "hardhat/config";
+
 import "@nomiclabs/hardhat-etherscan";
 import '@nomiclabs/hardhat-ethers';
 import "@nomiclabs/hardhat-waffle";
 import "solidity-coverage";
 import * as dotenv from "dotenv";
+import "./tasks";
 
 dotenv.config();
 
@@ -14,12 +16,9 @@ const config: HardhatUserConfig  = {
     },
     rinkeby: {
       url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-      gasPrice: 20000000000,
-      gas: 6000000,
       accounts: 
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-        blockGasLimit: 10000000040000029720
-    }
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []
+      }
   },
   etherscan: {
     apiKey: `${process.env.ETHERSCAN_KEY}`
