@@ -166,9 +166,9 @@ describe("exchange contract", function () {
       "You should start the sale round"
     );
     await exchange.connect(user2).startSaleRound();
-    // expect(await contractACDM.balanceOf(user1.address)).to.equal(500);
-    // expect(await contractACDM.balanceOf(user3.address)).to.equal(1500);
-    // expect(await contractACDM.balanceOf(user2.address)).to.equal(0);
+    expect(await contractACDM.balanceOf(user1.address)).to.equal(500);
+    expect(await contractACDM.balanceOf(user3.address)).to.equal(1500);
+    expect(await contractACDM.balanceOf(user2.address)).to.equal(0);
   });
 
   it("startSaleRound check", async function () {
