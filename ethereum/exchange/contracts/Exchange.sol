@@ -87,54 +87,32 @@ contract Exchange is AccessControl, ReentrancyGuard {
         uint256 _amountTokens = msg.value / _tokenPrice;
         IERC20(_tokenAndRound.addr).transfer(msg.sender, _amountTokens);
         uint256 _trueValue = _tokenPrice * _amountTokens;
-        address _firstRefferal = referrals[msg.sender];
-        if (_firstRefferal != address(0)) {
-            _firstRefferal.call{
-                value: (_trueValue * 5) / 100
-            }("Percentage of first referer");
-        }
-        address _secondRefferal = referrals[_firstRefferal];
-        if (_secondRefferal != address(0)) {
-             _secondRefferal.call{
-                value: (_trueValue * 3) / 100
-          }("Percentage of second referer");
-        }
+        sendToReferals(msg.sender, _trueValue, 50, 30);
     }
 
-    function buyTokenOnTradeRound(address payable _seller) external payable nonReentrant {
+    function buyTokenOnTradeRound(address payable _seller, uint256 _price) external payable nonReentrant {
         TokenAndRound memory _tokenAndRound = tokenAndRound;
         TokenOffer memory _tokenOffer = tokenOfferByUsers[_seller];
-
         require(uint96(block.timestamp) - _tokenAndRound.startTime < roundTime, 
                 "A trade round is finished"
         );
         require(_tokenAndRound.startTime % 2 == 1, 
                 "It is not a trade round"
         );
+        require(_price == _tokenOffer.price, 
+                "The price is changed"
+        );
         uint256 _amountTokens = msg.value / _tokenOffer.price;
-        if(_amountTokens  > _tokenOffer.amount) {
-            _amountTokens = _tokenOffer.amount;
-        }
         tokenOfferByUsers[_seller].amount -= _amountTokens;
         totalSales += _amountTokens;
-        uint256 trueValue = _amountTokens * _tokenOffer.price;
+        uint256 _trueValue = _amountTokens * _tokenOffer.price;
+
         IERC20(_tokenAndRound.addr).transfer(msg.sender, _amountTokens);
+        sendToReferals(msg.sender, _trueValue, 25, 25);
         _seller.call{
-                value: (trueValue * 95) / 100
+                value: (_trueValue * 95) / 100
         }("");
         
-        address _firstRefferal = referrals[_seller];
-        if (_firstRefferal != address(0)) {
-            _firstRefferal.call{
-                value: (msg.value * 25) / 1000
-            }("Percentage of first referer");
-        }
-        address _secondRefferal = referrals[_firstRefferal];
-        if (_secondRefferal != address(0)) {
-             _secondRefferal.call{
-                value: (msg.value * 25) / 1000
-          }("Percentage of second referer");
-        }
     } 
 
     function placeTokens(uint256 _amount, uint256 _price) external  {
@@ -184,9 +162,24 @@ contract Exchange is AccessControl, ReentrancyGuard {
         tokenAndRound.startTime = uint96(block.timestamp) + (uint96(block.timestamp) & 1);
     }
 
-    function withdrawByAdmin(address payable destination) external onlyAdmin {
-        (bool success,) = destination.call{value: address(this).balance}("");
+    function withdrawByAdmin(address payable _destination) external onlyAdmin {
+        (bool success,) = _destination.call{value: address(this).balance}("");
         require(success, "Failed to send money");
+    }
+
+    function sendToReferals(address _buyer, uint256 _summ, uint256 _commission1, uint256 _commission2) internal {
+        address _firstRefferal = referrals[_buyer];
+        if (_firstRefferal != address(0)) {
+            _firstRefferal.call{
+                value: (_summ * _commission1) / 1000
+            }("Percentage of first referer");
+        }
+        address _secondRefferal = referrals[_firstRefferal];
+        if (_secondRefferal != address(0)) {
+             _secondRefferal.call{
+                value: (_summ * _commission2) / 1000
+          }("Percentage of second referer");
+        }
     }
 
     modifier onlyAdmin() {

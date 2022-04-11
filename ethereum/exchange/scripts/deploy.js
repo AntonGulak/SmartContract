@@ -2,11 +2,15 @@ const { ethers } = require("hardhat");
 
 async function main() {
 
-  let bridge = await ethers.getContractFactory("Bridge");
-  ethereumBridge = await bridge.deploy(validator.address, 0);
-  await ethereumBridge.deployed();
+  let Exchange = await ethers.getContractFactory("Exchange");
+  let exchange = await Exchange.deploy();
+  await exchange.deployed();
+  console.log(exchange.address);
 
-  console.log(ethereumBridge.address);
+  let ERC20 = await ethers.getContractFactory("ERC20");
+  let contractACDM = await ERC20.deploy("Crypton Academy", "ACDM", exchange.address);
+  await contractACDM.deployed();
+  console.log(ERC20.address);
 }
 
 main()
