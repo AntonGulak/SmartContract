@@ -48,8 +48,9 @@ contract Exchange is AccessControl, ReentrancyGuard {
                 "You should start the sale round"
         );
         tokenAndRound.startTime = uint96(block.timestamp) | 1;
-        uint256 _currentBalance = IERC20(_tokenAndRound.addr).balanceOf(address(this));
-        IERC20(_tokenAndRound.addr).burn(_currentBalance);
+        IERC20(_tokenAndRound.addr).burn( 
+            IERC20(_tokenAndRound.addr).balanceOf(address(this))
+        );
     }
      function startSaleRound() external {
         TokenAndRound memory _tokenAndRound = tokenAndRound;
@@ -61,11 +62,11 @@ contract Exchange is AccessControl, ReentrancyGuard {
         );
         tokenAndRound.startTime = uint96(block.timestamp) + (uint96(block.timestamp) & 1);
         tokenPrice = (tokenPrice * 103) / 100 + 4 * 10**12;
-        uint256 _tokenAmount = totalSales / tokenPrice;
         totalSales = 0;
-        IERC20(_tokenAndRound.addr).mint(address(this), _tokenAmount);
-        address[] memory _currentSellers = currentSellers;
 
+        IERC20(_tokenAndRound.addr).mint(address(this), totalSales / tokenPrice);
+
+        address[] memory _currentSellers = currentSellers;
         for(uint i = 0; i < _currentSellers.length; i++) {
             IERC20(_tokenAndRound.addr).transfer(_currentSellers[i], 
                                                 tokenOfferByUsers[_currentSellers[i]].amount
@@ -85,8 +86,9 @@ contract Exchange is AccessControl, ReentrancyGuard {
         );
         uint256 _tokenPrice = tokenPrice;
         uint256 _amountTokens = msg.value / _tokenPrice;
-        IERC20(_tokenAndRound.addr).transfer(msg.sender, _amountTokens);
         uint256 _trueValue = _tokenPrice * _amountTokens;
+        
+        IERC20(_tokenAndRound.addr).transfer(msg.sender, _amountTokens);
         sendToReferals(msg.sender, _trueValue, 50, 30);
     }
 
