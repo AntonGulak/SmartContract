@@ -15,12 +15,19 @@ contract ERC20 is AccessControl {
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 
-     constructor(string memory _name,
-                 string memory _symbol, 
-                 address minterRole) {
-        _setupRole(MINTER_ROLE, minterRole);
-        name = _name;
-        symbol = _symbol; 
+     constructor( string memory _name_, string memory _symbol, uint256 _totalTokens) {
+        totalTokens = _totalTokens;
+        balances[msg.sender] = _totalTokens;
+        name = _name_;
+        symbol = _symbol;
+        
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
+        emit Transfer(address(0), msg.sender, _totalTokens);
+    }
+
+    function setupMinterRole(address account) external onlyAdmin {
+        _setupRole(MINTER_ROLE, account);
     }
 
     function balanceOf(address _owner) external view returns (uint256 balance) {
@@ -79,6 +86,14 @@ contract ERC20 is AccessControl {
         balances[_to] = balances[_to] + _value;
 
         emit Transfer(address(0), _to, _value);
+    }
+
+    modifier onlyAdmin() {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "function only for admin"
+        );
+        _;
     }
 
     modifier onlyMinter() {

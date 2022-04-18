@@ -10,7 +10,7 @@
     "rootDirs": ["./src", "./scripts", "./test"],
     "esModuleInterop": true
   },
-  "include": ["./scripts", "./test", "./typechain", "./tasks"],
+  "include": ["./scripts", "./test", "./typechain", "./tasks", "tasks/.ts"],
   "exclude": ["dist", "node_modules"],
   "files": ["./hardhat.config.ts"]
 }
