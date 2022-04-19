@@ -129,8 +129,13 @@ describe("MarketPlace contract", function () {
     let timeStamp = (await ethers.provider.getBlock("latest")).timestamp;
 
     hardhatERC20.connect(user2).approve(hardhadMarketPlace.address, 100);
+    await expect(hardhadMarketPlace.connect(user2)
+      .buyItem(0, 1, 0, hardhatERC721.address, user1.address, timeStamp))
+      .to.be.revertedWith(
+      "Token does not exist"
+    );
     await hardhadMarketPlace.connect(user2)
-          .buyItem(0, 50, 0, hardhatERC721.address, user1.address, timeStamp
+       .buyItem(0, 50, 0, hardhatERC721.address, user1.address, timeStamp
     );
     
     expect(await hardhatERC20.balanceOf(user1.address)).to.equal(50);

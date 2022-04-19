@@ -87,6 +87,7 @@ contract Bridge is AccessControl {
         bytes32 r,
         bytes32 s
     ) external {
+        console.log(block.chainid);
         require(ERC20Tokens[tokenAddress][fromChainId] != address(0), "You cannot use this token address");
         bytes32 msgHash = keccak256(
             abi.encodePacked(

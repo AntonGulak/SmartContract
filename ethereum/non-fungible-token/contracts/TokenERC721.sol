@@ -1,61 +1,107 @@
 pragma solidity ^0.8.11;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "./IERC2981.sol";
 
-contract TokenERC721 is AccessControl, ERC721 {
+/**
+ * @title Sample NFT contract
+ * @dev Extends ERC-721 NFT contract and implements ERC-2981
+ */
 
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenID; 
-    string private _baseMetaURI;
+contract Token is Ownable, ERC721Enumerable, ERC721URIStorage {
 
-    mapping(uint256 => string) public id_to_meta;
-    mapping(string => bool) public meta_to_flag;
+    mapping(string => uint8) hashes;
+    address public royaltiesReceiver;
+    uint256 public royaltiesPercentage;
+    uint256 public maxSupply;
 
-    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol)  {
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _baseMetaURI = "https://ipfs.io/ipfs/";
+    event Mint(uint256 tokenId, address recipient);
+
+    constructor(uint256 royaltiesPercentage, uint256 _royaltiesPercentage, uint256 _maxSupply, string memory _name, string memory _symbol) ERC721(_name, _symbol) {
+         royaltiesReceiver = msg.sender;
+         maxSupply = _maxSupply;
+         royaltiesPercentage = _royaltiesPercentage;
+     }
+
+    /** Overrides ERC-721's _baseURI function */
+    function _baseURI() internal view override returns (string memory) {
+        return "https://gateway.pinata.cloud/ipfs/";
     }
 
-    function mint(string memory metadata) public onlyAdmin {
-        require(meta_to_flag[metadata] == false, "token repetition");
-
-        _safeMint(msg.sender,  _tokenID.current());
-        id_to_meta[_tokenID.current()] = metadata;
-        meta_to_flag[metadata] = true;
-        _tokenID.increment();
+    function _beforeTokenTransfer(address from, address to, uint256 amount)
+    internal override(ERC721, ERC721Enumerable) {
+        super._beforeTokenTransfer(from, to, amount);
     }
 
-    function burn(uint256 tokenId) external onlyAdmin {
-        _burn(tokenId);
-        meta_to_flag[id_to_meta[tokenId]] = false;
-        id_to_meta[tokenId] = "";
+    function _burn(uint256 tokenId)
+    internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
     }
 
-    function setBaseURI(string memory baseURI) public onlyAdmin {
-        _baseMetaURI = baseURI;
+    /// @notice Changes the royalties' recipient address (in case rights are
+    ///         transferred for instance)
+    /// @param newRoyaltiesReceiver - address of the new royalties recipient
+    function setRoyaltiesReceiver(address newRoyaltiesReceiver)
+    external onlyOwner {
+        require(newRoyaltiesReceiver != royaltiesReceiver); // dev: Same address
+        royaltiesReceiver = newRoyaltiesReceiver;
     }
 
-    function tokenURI(uint256 tokenId) public view override returns(string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-        return string(abi.encodePacked(_baseURI(), id_to_meta[tokenId]));
+    /// @notice Returns a token's URI
+    /// @dev See {IERC721Metadata-tokenURI}.
+    /// @param tokenId - the id of the token whose URI to return
+    /// @return a string containing an URI pointing to the token's ressource
+    function tokenURI(uint256 tokenId)
+    public view override(ERC721, ERC721URIStorage)
+    returns (string memory) {
+        return super.tokenURI(tokenId);
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
-        return _baseMetaURI;
-    }
-    
-    function supportsInterface(bytes4 interfaceId) public 
-             view virtual override(ERC721, AccessControl) returns (bool) {
-        return super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+    public view override(ERC721, ERC721Enumerable)
+    returns (bool) {
+        return interfaceId == type(IERC2981).interfaceId ||
+        super.supportsInterface(interfaceId);
     }
 
-    modifier onlyAdmin() {
-        require(
-            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
-            "function only for admin"
-        );
-        _;
+
+    function tokensOfOwner(address _owner) external view
+    returns(uint256[] memory ownerTokens ) {
+        uint256 tokenCount = balanceOf(_owner);
+        uint256[] memory result = new uint256[](tokenCount);
+
+        if (tokenCount == 0) {
+            return new uint256[](0);
+        } else {
+            for (uint256 i=0; i<tokenCount; i++) {
+                result[i] = tokenOfOwnerByIndex(_owner, i);
+            }
+            return result;
+        }
+    }
+
+    function royaltyInfo(uint256 _tokenId, uint256 _salePrice) external view
+    returns (address receiver, uint256 royaltyAmount) {
+        uint256 _royalties = (_salePrice * royaltiesPercentage) / 100;
+        return (royaltiesReceiver, _royalties);
+    }
+
+
+    function mint(address recipient, string memory hash)
+    external onlyOwner
+    returns (uint256 tokenId)
+    {
+        require(totalSupply() <= maxSupply, "All tokens minted");
+        require(bytes(hash).length > 0);
+        require(hashes[hash] != 1);
+        hashes[hash] = 1;
+        uint256 newItemId = totalSupply() + 1;
+        _safeMint(recipient, newItemId);
+        _setTokenURI(newItemId, hash);
+        emit Mint(newItemId, recipient);
+        return newItemId;
     }
 }

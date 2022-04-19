@@ -1,3 +1,5 @@
+import "hardhat/console.sol";
+
 pragma solidity ^0.7.0;
 
 contract Donations {
@@ -15,6 +17,8 @@ contract Donations {
         if (balances[msg.sender] == 0) {
             benefactors.push(msg.sender);
         }
+        balances[msg.sender] += msg.value;
+        balances[msg.sender] -= msg.value;
         balances[msg.sender] += msg.value;
     }
 

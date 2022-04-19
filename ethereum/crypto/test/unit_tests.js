@@ -24,9 +24,11 @@ describe("Donations contract", function () {
   });
 
   it("correct donate call", async function () {
+    console.log(await ethers.provider.getBalance(user1.address));
     await hardhatDonations.connect(user1).donate({
       value: ethers.utils.parseEther("1.0")
     }); 
+    console.log(await ethers.provider.getBalance(user1.address));
     expect(await provider.getBalance(hardhatDonations.address)).
       to.equal(ethers.utils.parseEther("1.0")
     );

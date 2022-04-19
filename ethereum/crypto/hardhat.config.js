@@ -1,18 +1,16 @@
 require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
 require('solidity-coverage');
-require('dotenv').config();
-require("./tasks/donationsTasks.js")
 
 module.exports = {
-  defaultNetwork: "rinkeby",
+  defaultNetwork: "hardhat",
   networks: {
     hardhat: {
-    },
-    rinkeby: {
-      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-      accounts: [process.env.PRIVATE_KEY]
-    }
+     }
+    // rinkeby: {
+    //   url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+    //   accounts: [process.env.PRIVATE_KEY]
+    // }
   },
   etherscan: {
     apiKey: `${process.env.ETHERSCAN_KEY}`

@@ -5,8 +5,6 @@ import '@nomiclabs/hardhat-ethers';
 import "@nomiclabs/hardhat-waffle";
 import "solidity-coverage";
 import * as dotenv from "dotenv";
-import "./tasks";
-
 dotenv.config();
 
 const config: HardhatUserConfig  = {
